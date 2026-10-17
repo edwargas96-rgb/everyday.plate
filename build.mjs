@@ -15,8 +15,13 @@ const draft = process.env.SHOW_DRAFT === '1';
 // ---------- variables: {price} {brand} {days} {legalName} ... usable in any config string ----------
 const days = raw.guarantee.days;
 const guaranteeText = raw.guarantee.text.replaceAll('{days}', days);
+const PRICE_TOKEN = '\u0001'; // {price} becomes <span data-price>: $90, or $19.90 once the coupon is unlocked
 const vars = {
-  price: raw.price.display,
+  price: PRICE_TOKEN,
+  listPrice: raw.price.display,
+  couponPrice: raw.price.coupon.display,
+  couponCode: raw.price.coupon.code,
+  pieceValue: raw.price.pieceValue,
   brand: raw.site.brand,
   days,
   year: new Date().getFullYear(),
@@ -41,12 +46,18 @@ const cfg = interp(raw);
 
 // ---------- helpers ----------
 const esc = (s = '') =>
-  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replaceAll(PRICE_TOKEN, `<span data-price>${raw.price.display}</span>`);
 // Escape, then turn [[placeholder]] into a visible highlighted marker.
 const t = (s = '') => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark class="ph" title="Placeholder: replace before launch">[$1]</mark>');
 const siteUrl = cfg.site.url.replace(/\/$/, '');
 const checkoutSet = !/\[\[/.test(cfg.checkoutUrl);
 const checkoutHref = checkoutSet ? cfg.checkoutUrl : '#buy';
+const freeHref = /\[\[/.test(cfg.freeRecipe.url) ? '#free-recipe' : cfg.freeRecipe.url;
 
 // Edit slot: visible only in draft mode, never on the live page.
 const slot = (label) => (draft ? `<div class="slot"><strong>Edit slot:</strong> ${esc(label)} <span>(hidden on the live page until filled)</span></div>` : '');
@@ -67,6 +78,7 @@ const ICONS = {
   search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
   question: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.2.9-1.2 1.7"/><path d="M12 17v.1"/>',
   heart: '<path d="M12 20.5s-7.5-4.8-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.4-7.5 10.2-7.5 10.2z"/>',
+  gift: '<rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12"/><path d="M12 8c-2.5 0-4-1-4-2.5S9.5 3 12 8zM12 8c2.5 0 4-1 4-2.5S14.5 3 12 8z"/>',
   printer: '<path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/>',
 };
 const icon = (name, size = 28) =>
@@ -78,10 +90,40 @@ const disclaimer = (cls = '') => `<p class="disclaimer ${cls}"><strong>Disclaime
 
 const cta = (button, support, where) => `
   <div class="cta-wrap">
-    <a class="btn" href="${esc(checkoutHref)}" data-checkout data-where="${where}">${esc(button)}</a>
+    <a class="btn" href="${esc(checkoutHref)}" data-checkout data-where="${where}"><span>${esc(button)}</span></a>
     <p class="cta-note">${HEART} ${esc(support)}</p>
     ${disclaimer()}
   </div>`;
+
+// What the buyer sees under a buy button: the full price, or the coupon price once it is unlocked.
+const priceBox = ({ stack = false } = {}) => {
+  const p = cfg.pricing;
+  return `<div class="pricebox">
+    ${stack ? `<p class="stack">${esc(p.stack)}</p>` : ''}
+    <div class="only-locked">
+      <p class="pb-row"><span class="pb-label">${esc(p.fullPriceLabel)}</span> <span class="pb-big">${esc(cfg.price.display)}</span></p>
+      <p class="nudge"><strong>${esc(p.lockedHeadline)}</strong> ${esc(p.lockedText)} <a href="${esc(freeHref)}" data-free>${esc(p.lockedLink)}</a></p>
+    </div>
+    <div class="only-unlocked">
+      <p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span></p>
+      <p class="applied">${HEART} ${esc(p.unlockedLabel)}</p>
+    </div>
+  </div>`;
+};
+
+const modal = () => {
+  const m = cfg.pricing.modal;
+  return `<dialog id="unlock-modal" class="modal" aria-labelledby="um-title">
+    <form method="dialog" class="modal-in">
+      <button class="modal-x" value="close" aria-label="${esc(m.close)}">×</button>
+      <div class="modal-ico">${icon('gift', 30)}</div>
+      <h2 id="um-title">${esc(m.title)}</h2>
+      <p>${esc(m.text)}</p>
+      <a class="btn" href="${esc(freeHref)}" data-free>${esc(m.primary.toUpperCase())}</a>
+      <a class="modal-skip" href="${esc(checkoutHref)}" data-continue>${esc(m.secondary)}</a>
+    </form>
+  </dialog>`;
+};
 
 const logo = (cls) => `<img class="${cls}" src="${esc(cfg.logo.src)}" width="${cfg.logo.width}" height="${cfg.logo.height}" alt="${esc(cfg.site.brand)}">`;
 
@@ -97,6 +139,8 @@ function layout({ title, description, path: urlPath, body, noindex = false, page
     pixel: Boolean(pixelId),
     value: cfg.price.amount,
     currency: cfg.price.currency,
+    listDisplay: cfg.price.display,
+    coupon: cfg.price.coupon,
     contentName: cfg.tracking.contentName,
     passQuery: cfg.passQueryToCheckout,
   }).replace(/</g, '\\u003c');
@@ -124,7 +168,7 @@ ${ogImage ? `<meta property="og:image" content="${esc(og)}"><meta property="og:i
 <link rel="stylesheet" href="/styles.css">
 ${pixel}
 <noscript>${pixelId ? `<img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=${esc(pixelId)}&ev=PageView&noscript=1">` : ''}</noscript>
-<script>window.__SITE__=${siteData};</script>
+<script>window.__SITE__=${siteData};try{${page === 'free-recipe' ? "localStorage.setItem('ep_unlock','1');" : ''}if(localStorage.getItem('ep_unlock')==='1')document.documentElement.classList.add('unlocked')}catch(e){}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -192,7 +236,6 @@ const NEWS = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke
 function home() {
   const c = cfg;
   const freeSet = !/\[\[/.test(c.freeRecipe.url);
-  const freeHref = freeSet ? c.freeRecipe.url : '#free-recipe';
 
   const hookVariant = (v, tag) => {
     const h = c.hook[v];
@@ -208,7 +251,7 @@ function home() {
     ? `<div class="strip">${c.images.meals.map((m) => `<img src="${esc(m.src)}" alt="${esc(m.alt)}" width="600" height="450" loading="lazy">`).join('')}</div>`
     : slot('everyday-meal photos (images.meals)');
 
-  const ctaBand = (c2, where, title) => `<div class="wrap narrow center"><div class="cta-card"><h2>${esc(title)}</h2>${deco}${cta(c2.button, c2.support, where)}</div></div>`;
+  const ctaBand = (c2, where, title) => `<div class="wrap narrow center"><div class="cta-card"><h2>${esc(title)}</h2>${deco}${priceBox()}${cta(c2.button, c2.support, where)}</div></div>`;
 
   const testimonials = c.testimonials.items.length
     ? {
@@ -294,8 +337,8 @@ function home() {
       bg: 'cream',
       id: 'look',
       html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p><div class="pieces">${c.inside.items
-        .map((p, i) => `<article class="piece"><div class="cover"><img src="${esc(p.src)}" alt="${esc(p.alt)}" width="800" height="1036" loading="lazy"><span class="num">${i + 1}</span></div><div class="piece-body"><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div></article>`)
-        .join('')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
+        .map((p, i) => `<article class="piece"><div class="cover"><img src="${esc(p.src)}" alt="${esc(p.alt)}" width="800" height="1036" loading="lazy"><span class="num">${i + 1}</span></div><div class="piece-body"><h3>${esc(p.title)}</h3><p class="val">${esc(c.price.pieceValue)} value</p><p>${esc(p.text)}</p></div></article>`)
+        .join('')}</div><div class="deal">${priceBox({ stack: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
     },
     // 6. Pain
     {
@@ -368,7 +411,7 @@ function home() {
         <p class="hand">${HEART} ${esc(c.phrases.beforeFinal)} ${HEART}</p>
         <h2>${esc(c.cta.final.title)}</h2>${deco}
         <p class="final-lines">${c.cta.final.lines.map((l) => `<span>${esc(l)}</span>`).join('')}</p>
-        <p class="price-line">${esc(c.cta.final.priceLine)}</p>
+        ${priceBox()}
         ${cta(c.cta.final.button, c.cta.final.support, 'final')}
         ${checkoutSet ? '' : '<p class="ph-box"><mark class="ph">CHECKOUT_URL not set. Buttons do not go anywhere yet.</mark></p>'}
       </div></div>`,
@@ -379,8 +422,61 @@ function home() {
 <main id="main">
 ${assemble(sections, 'navy')}
 </main>
-${footer()}`;
+${footer()}
+${modal()}`;
   return layout({ title: c.seo.title, description: c.seo.description, path: '/', body, page: 'home' });
+}
+
+// ---------- free recipe page: opening it unlocks the coupon ----------
+function recipePage() {
+  const r = cfg.recipePage;
+  const rv = r.reveal;
+  const list = (items) => `<ul>${items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
+  const sections = [
+    {
+      bg: 'navy',
+      cls: 'recipe-hero',
+      html: `${RAYS}<div class="wrap center hook-wrap">
+        <p class="kicker">${HEART}<span>${esc(r.kicker)}</span></p>
+        <h1>${esc(r.title)}</h1>
+        <p class="hook-sub">${esc(r.sub)}</p>
+        <ul class="chips on-navy">${r.facts.map((f) => `<li><strong>${esc(f.k)}</strong> ${esc(f.v)}</li>`).join('')}</ul>
+      </div>`,
+    },
+    {
+      bg: 'cream',
+      cls: 'recipe-body',
+      html: `<div class="wrap narrow">
+        <figure class="dish"><img src="${esc(r.image)}" alt="${esc(r.imageAlt)}" width="${r.imageSize[0]}" height="${r.imageSize[1]}" fetchpriority="high"></figure>
+        <div class="recipe-grid">
+          <div class="r-card"><h2>${esc(r.ingredientsTitle)}</h2>${list(r.ingredients)}<h3>${esc(r.serveTitle)}</h3>${list(r.serve)}</div>
+          <div class="r-card"><h2>${esc(r.stepsTitle)}</h2><ol class="r-steps">${r.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol></div>
+        </div>
+        <div class="r-card tips"><h3>${esc(r.tipsTitle)}</h3>${list(r.tips)}${r.nutrition ? `<p class="small">${esc(r.nutrition)}</p>` : ''}</div>
+      </div>`,
+    },
+    {
+      bg: 'tint',
+      cls: 'reveal',
+      html: `<div class="wrap narrow center"><div class="cta-card">
+        <div class="modal-ico">${icon('gift', 30)}</div>
+        <h2>${esc(rv.title)}</h2>${deco}
+        <p>${esc(rv.text)}</p>
+        <div class="code-box"><span class="code-label">${esc(rv.codeLabel)}</span><strong class="code" id="coupon-code">${esc(cfg.price.coupon.code)}</strong><button type="button" class="copy-btn" data-copy="${esc(cfg.price.coupon.code)}" data-copied="${esc(rv.copied)}">${esc(rv.copy)}</button></div>
+        <p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span></p>
+        ${cta(rv.cta, rv.support, 'recipe')}
+        <p class="bonus">${HEART} ${esc(rv.bonus)}</p>
+        <p class="back"><a href="/">${esc(rv.back)}</a></p>
+      </div></div>`,
+    },
+  ];
+  const body = `
+${header()}
+<main id="main">
+${assemble(sections, 'navy')}
+</main>
+${footer()}`;
+  return layout({ title: r.seoTitle, description: r.seoDescription, path: '/free-recipe/', body, page: 'free-recipe' });
 }
 
 // ---------- simple pages ----------
@@ -446,6 +542,7 @@ const pages = [
   ['privacy/index.html', textPage('privacy', '/privacy/')],
   ['disclaimer/index.html', textPage('disclaimer', '/disclaimer/')],
   ['contact/index.html', contact()],
+  ['free-recipe/index.html', recipePage()],
   ['thank-you/index.html', thankYou()],
 ];
 
@@ -461,7 +558,7 @@ await cp(path.join(root, 'src', 'styles.css'), path.join(dist, 'styles.css'));
 await cp(path.join(root, 'src', 'site.js'), path.join(dist, 'site.js'));
 await writeFile(path.join(dist, 'robots.txt'), `User-agent: *\nDisallow: /thank-you/\n${siteUrl ? `Sitemap: ${siteUrl}/sitemap.xml\n` : ''}`);
 if (siteUrl) {
-  const urls = ['/', '/terms/', '/privacy/', '/disclaimer/', '/contact/'];
+  const urls = ['/', '/free-recipe/', '/terms/', '/privacy/', '/disclaimer/', '/contact/'];
   await writeFile(
     path.join(dist, 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${siteUrl}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
@@ -472,6 +569,7 @@ if (siteUrl) {
 const blockers = new Set();
 for (const [, html] of pages) for (const m of html.matchAll(/<mark class="ph"[^>]*>\[(.+?)\]<\/mark>/g)) blockers.add(m[1]);
 if (!checkoutSet) blockers.add('CHECKOUT_URL');
+if (!cfg.price.coupon.confirmedWithMerchant) blockers.add(`Checkout: product at ${cfg.price.display}, coupon ${cfg.price.coupon.code} = ${cfg.price.coupon.display}, and its URL parameter (price.coupon.param); then set confirmedWithMerchant`);
 if (/\[\[/.test(cfg.freeRecipe.url)) blockers.add('FREE_RECIPE_URL (where the free recipe button goes)');
 for (const [k, v] of Object.entries(cfg.pages)) if (v.draft) blockers.add(`Attorney review of the ${k} page`);
 if (/placeholder/i.test(cfg.images.kitMockup)) blockers.add('Kit mockup image (images.kitMockup is still a placeholder)');

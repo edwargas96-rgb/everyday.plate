@@ -14,6 +14,12 @@ Look: cream background, navy `#172B4D` + action blue `#2563EB`, hearts and short
 Pages: `/terms/`, `/privacy/`, `/disclaimer/`, `/contact/`, `/thank-you/` (Purchase event, not indexed).
 Sections are colored bands joined by wave dividers; colors alternate automatically, so adding or hiding a section never breaks the rhythm.
 
+## Price and the HEALTH coupon
+- Full price **$90** (6 pieces × $15). Opening the free recipe (`/free-recipe/`) unlocks coupon **HEALTH**: **$19.90**. The unlock is saved in that browser (`localStorage`), so every price on the site switches to $19.90 with $90 crossed out.
+- Buying before opening the recipe: the buy button opens a suggestion ("your free recipe is waiting": coupon + one more dish on the menu). "No thanks, continue at $90" goes to the normal checkout.
+- Unlocked buyers are sent to the checkout with `?coupon=HEALTH` (`price.coupon.param`). **In your checkout (merchant of record)** create the product at $90 and the coupon HEALTH = $19.90, confirm the URL parameter that applies it, then set `price.coupon.confirmedWithMerchant: true`. Buyers can also type the code (a copy button is on the recipe page).
+- All numbers and texts: `price` and `pricing` in `site.config.mjs`. The free recipe itself: `recipePage`.
+
 ## Edit
 Everything is in `site.config.mjs` (variables `{price} {brand} {days}` work inside any text).
 ```bash
@@ -28,7 +34,7 @@ In use now: `kit-mockup.webp` (the kit on the kitchen table) and three covers in
 Optional: `images.meals` (everyday-meal photo strip) and `static/og.png` (1200×630 share image).
 
 ## Deploy on Vercel
-Import this repo (framework preset: Other; `vercel.json` sets build and output). Optional environment variables: `CHECKOUT_URL`, `FREE_RECIPE_URL`, `META_PIXEL_ID`, `SITE_URL`, `SUPPORT_EMAIL`. Redeploy after changing them. Checkout's post-purchase redirect: `https://yourdomain.com/thank-you/`.
+Import this repo (framework preset: Other; `vercel.json` sets build and output). Optional environment variables: `CHECKOUT_URL`, `FREE_RECIPE_URL` (default `/free-recipe/`), `META_PIXEL_ID`, `SITE_URL`, `SUPPORT_EMAIL`. Redeploy after changing them. Checkout's post-purchase redirect: `https://yourdomain.com/thank-you/`.
 
 ## Meta Pixel
 `PageView` + `ViewContent` (with a generic `headline_variant`) on load, `Lead` on the free recipe button, `InitiateCheckout` on any buy button, `Purchase` on `/thank-you/`. Params are generic (`content_name: "14-Day Printable Kit"`): never put a health term in them or in the domain/URL.

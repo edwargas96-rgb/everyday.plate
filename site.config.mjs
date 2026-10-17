@@ -2,7 +2,8 @@
 //  ALL page copy, prices, images and links live in THIS file.
 //  Edit here, run `npm run build`, deploy. No need to touch build.mjs or CSS.
 //
-//  Variables you can use inside any text: {price} {brand} {days}
+//  Variables you can use inside any text: {price} (live: $90, or $19.90 once the coupon is unlocked)
+//  {listPrice} {couponPrice} {couponCode} {brand} {days}
 //  {legalName} {supportEmail} {year}
 //
 //  EMPTY = HIDDEN. Customer reviews, the dietitian review, the creator
@@ -38,7 +39,15 @@ export default {
   logo: { src: '/images/logo.webp', width: 900, height: 237 },
 
   // ---------- Price & checkout ----------
-  price: { amount: 19, currency: 'USD', display: '$19' }, // test range: 17 to 27
+  // Full price is what a buyer pays WITHOUT the coupon (6 pieces x $15). Opening the free recipe
+  // unlocks the coupon. Create both in your checkout: the product at the full price + the coupon code.
+  price: {
+    currency: 'USD',
+    amount: 90,
+    display: '$90',
+    pieceValue: '$15',
+    coupon: { code: 'HEALTH', amount: 19.9, display: '$19.90', param: 'coupon', confirmedWithMerchant: false },
+  },
   // Merchant-of-record checkout link (or set the CHECKOUT_URL env var in Vercel).
   // The $7 low-sugar snacks bump is a checkbox at checkout, not on this page.
   checkoutUrl: env.CHECKOUT_URL || '[[CHECKOUT_URL]]',
@@ -103,12 +112,87 @@ export default {
     citeUrl: 'https://www.cdc.gov/diabetes/php/data-research/index.html',
   },
 
-  // ---------- 5. Free recipe button (the sign-up flow gets structured later) ----------
-  // Point it to a page/form with FREE_RECIPE_URL (env var) or freeRecipe.url.
+  // ---------- 5. Free recipe button + the recipe page (/free-recipe/) ----------
+  // Opening /free-recipe/ unlocks the coupon on that device (saved in the browser).
   freeRecipe: {
     button: 'GET A FREE RECIPE',
-    support: 'A free taste of what’s inside the kit.',
-    url: env.FREE_RECIPE_URL || '[[FREE_RECIPE_URL]]',
+    support: 'Check it out and unlock coupon {couponCode}: the kit drops from {listPrice} to {couponPrice}.',
+    url: env.FREE_RECIPE_URL || '/free-recipe/',
+  },
+  recipePage: {
+    seoTitle: 'Free Recipe: Chicken Fajita Skillet | The Everyday Plate',
+    seoDescription: 'A free, simple chicken fajita skillet from The Everyday Plate. Ready in 30 minutes with regular grocery-store ingredients.',
+    kicker: 'Your free recipe',
+    title: 'Chicken Fajita Skillet',
+    sub: 'One pan, color on the plate and dinner on the table in about 30 minutes.',
+    image: '/images/free-recipe-chicken-fajitas.webp',
+    imageAlt: 'A black skillet of sliced chicken fajitas with red, yellow and green bell peppers and onions, with lime wedges, pico de gallo, tortillas and avocado nearby',
+    imageSize: [900, 1350],
+    facts: [
+      { k: 'Prep', v: '15 min' },
+      { k: 'Cook', v: '15 min' },
+      { k: 'Serves', v: '4' },
+    ],
+    ingredientsTitle: 'What you need',
+    ingredients: [
+      '1½ lb (680 g) boneless, skinless chicken breasts, sliced into thin strips',
+      '3 bell peppers (a mix of red, yellow and green), sliced',
+      '1 medium onion, cut into half-moons',
+      '2 tbsp olive oil, divided',
+      '2 tsp chili powder',
+      '1 tsp ground cumin',
+      '1 tsp smoked paprika',
+      '1 tsp garlic powder',
+      '½ tsp salt and ¼ tsp black pepper',
+      '1 lime: juice of half, the rest in wedges for serving',
+    ],
+    serveTitle: 'To serve',
+    serve: ['Warm corn or whole-wheat tortillas', 'Pico de gallo', 'Sliced avocado', 'Plain Greek yogurt or sour cream', 'Fresh cilantro'],
+    stepsTitle: 'How to make it',
+    steps: [
+      'Stir the chili powder, cumin, paprika, garlic powder, salt and pepper together. Toss the chicken with 1 tbsp of the oil, the spice mix and the juice of half the lime. Let it sit while you slice the vegetables.',
+      'Heat a large skillet (cast iron works well) over medium-high heat. Cook the chicken in a single layer, in two batches if needed, 3 to 4 minutes per side until browned and cooked through (165°F / 74°C). Move it to a plate.',
+      'Add the remaining oil to the same pan. Cook the peppers and onion, stirring now and then, for 5 to 6 minutes, until tender with a few browned edges. A splash of water helps lift the browned bits from the pan.',
+      'Return the chicken to the skillet, squeeze in a little lime juice and toss for a minute to bring it all together.',
+      'Serve right from the skillet with warm tortillas and your favorite toppings.',
+    ],
+    tipsTitle: 'Good to know',
+    tips: [
+      'Slice the chicken against the grain so it stays tender.',
+      'Don’t crowd the pan. Browning needs space.',
+      'Chicken thighs work too, and so does a mix of whatever peppers you have.',
+      'Leftovers keep in the fridge for 3 to 4 days. Reheat until steaming hot.',
+    ],
+    nutrition: '', // optional line (e.g. per-serving estimate). Leave empty until your dietitian has checked it.
+    // After the recipe: the coupon reveal
+    reveal: {
+      title: 'You unlocked coupon {couponCode}',
+      text: 'Thanks for checking out the recipe. Your coupon is active on this device, and the full kit is now {couponPrice} instead of {listPrice}.',
+      bonus: 'And this recipe is one more dish on your menu, on top of the 30 recipe cards inside the kit.',
+      codeLabel: 'Your code',
+      copy: 'Copy code',
+      copied: 'Copied!',
+      cta: 'GET THE KIT FOR {couponPrice}',
+      support: 'One-time purchase · Instant PDF download',
+      back: 'Back to the full page',
+    },
+  },
+
+  // ---------- Price explanation (shown under the pieces and in the buy boxes) ----------
+  pricing: {
+    stack: '6 pieces × {pieceValue} = {listPrice}',
+    fullPriceLabel: 'Full price',
+    lockedHeadline: 'Wait, there’s a better price.',
+    lockedText: 'Check your free recipe first and unlock coupon {couponCode}: the kit drops to {couponPrice} instead of {listPrice}. You also get one more dish on your menu.',
+    lockedLink: 'Get my free recipe',
+    unlockedLabel: 'Coupon {couponCode} unlocked',
+    modal: {
+      title: 'Before you go: your free recipe is waiting',
+      text: 'Check out the free recipe and you unlock coupon {couponCode}. The kit drops from {listPrice} to {couponPrice}, and you get one more dish for your weekly menu.',
+      primary: 'Get my free recipe',
+      secondary: 'No thanks, continue at {listPrice}',
+      close: 'Close',
+    },
   },
 
   // ---------- 6. Pain (agitate it, then name the way out) ----------
@@ -263,11 +347,12 @@ export default {
       { q: 'Is this a physical product?', a: 'No. It’s a digital PDF kit in US Letter size. You download it, then print it at home or at a print shop, or view it on a phone or tablet.' },
       { q: 'Do I need to print it?', a: 'You can print it or view it on your phone or tablet. Printing is optional.' },
       { q: 'Does it work in black and white?', a: 'Yes. It’s designed to print well in black and white, or in color if you like.' },
-      { q: 'What does the {price} purchase include?', a: 'The Fridge Chart, the 14-Day Meal Plan, two Weekly Grocery Lists (budget swaps included), 30 Recipe Cards, the 14-Day Habit & Meal Tracker, and Questions for My Doctor.' },
+      { q: 'What does the kit include?', a: 'The Fridge Chart, the 14-Day Meal Plan, two Weekly Grocery Lists (budget swaps included), 30 Recipe Cards, the 14-Day Habit & Meal Tracker, and Questions for My Doctor.' },
       { q: 'How many recipes are there?', a: '30 recipe cards, one recipe per page.' },
       { q: 'Do I need an air fryer?', a: 'No. No special equipment. There’s no air fryer or Instant Pot in any recipe.' },
       { q: 'Do I need special ingredients?', a: 'No. Everything is available at a regular grocery store.' },
-      { q: 'Is this a subscription?', a: 'No. The {price} price is a one-time purchase. Any applicable taxes will be shown at checkout.' },
+      { q: 'Is this a subscription?', a: 'No. It’s a one-time purchase. Any applicable taxes will be shown at checkout.' },
+      { q: 'How does coupon {couponCode} work?', a: 'Open the free recipe and the coupon unlocks automatically on that device. At checkout the price goes from {listPrice} to {couponPrice}. If it doesn’t apply by itself, type {couponCode} into the coupon box.' },
       { q: 'Who is this kit for?', a: 'It’s an educational meal-planning resource for adults seeking practical meal ideas, including people exploring food choices in the context of prediabetes. It provides general information, not personalized guidance.' },
       { q: 'Does this replace advice from my doctor or dietitian?', a: 'No. Use it as educational material and discuss dietary changes with your healthcare professional.' },
       { q: 'What if I take medication or have specific dietary needs?', a: 'Talk to your doctor or registered dietitian before changing your diet. Do not stop or adjust medication based on this kit.' },
@@ -308,11 +393,12 @@ export default {
         { h: '3. Digital products and license', p: ['Our products are digital PDF files delivered by download. When you buy, you get a personal, non-transferable license to use the product for yourself and your household. You may print it for your own use. You may not resell, share publicly, copy or redistribute it.'] },
         { h: '4. Payments', p: ['Payments are handled by our payment partner, which acts as the seller of record. Prices are shown in U.S. dollars. Taxes may apply and are handled at checkout.'] },
         { h: '5. Refunds', p: ['{refundText}'] },
-        { h: '6. No guarantees of results', p: ['We do not promise any particular result. Use of the products is at your own risk.'] },
-        { h: '7. Intellectual property', p: ['All content on this site and in our products is owned by {legalName} or its licensors and is protected by copyright.'] },
-        { h: '8. Limitation of liability', p: ['To the fullest extent permitted by law, we are not liable for indirect, incidental or consequential damages arising from your use of the site or products, and our total liability is limited to the amount you paid for the product. [[Lawyer to confirm wording and governing law/jurisdiction.]]'] },
-        { h: '9. Changes', p: ['We may update these terms from time to time. The date at the top shows when they were last changed.'] },
-        { h: '10. Contact', p: ['Questions? Email {supportEmail}.'] },
+        { h: '6. Coupons and discounts', p: ['Coupon {couponCode} is unlocked by viewing the free recipe page and reduces the price of the kit from {listPrice} to {couponPrice}. We may change or end a promotion at any time. [[Confirm the coupon works at checkout.]]'] },
+        { h: '7. No guarantees of results', p: ['We do not promise any particular result. Use of the products is at your own risk.'] },
+        { h: '8. Intellectual property', p: ['All content on this site and in our products is owned by {legalName} or its licensors and is protected by copyright.'] },
+        { h: '9. Limitation of liability', p: ['To the fullest extent permitted by law, we are not liable for indirect, incidental or consequential damages arising from your use of the site or products, and our total liability is limited to the amount you paid for the product. [[Lawyer to confirm wording and governing law/jurisdiction.]]'] },
+        { h: '10. Changes', p: ['We may update these terms from time to time. The date at the top shows when they were last changed.'] },
+        { h: '11. Contact', p: ['Questions? Email {supportEmail}.'] },
       ],
     },
     privacy: {
