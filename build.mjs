@@ -69,6 +69,7 @@ const heading = (text, center = true) => `<h2${center ? ' class="center"' : ''}>
 
 // Discreet line icons, drawn in the brand blue via currentColor.
 const ICONS = {
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   fridge: '<rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M6 10h12M9 6v1.5M9 13v3"/>',
   calendar: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
   cart: '<path d="M3 4h2.2l2.3 11h9.3l2-8H6.3"/><circle cx="9" cy="19" r="1.3"/><circle cx="17" cy="19" r="1.3"/>',
@@ -168,7 +169,7 @@ ${ogImage ? `<meta property="og:image" content="${esc(og)}"><meta property="og:i
 <link rel="stylesheet" href="/styles.css">
 ${pixel}
 <noscript>${pixelId ? `<img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=${esc(pixelId)}&ev=PageView&noscript=1">` : ''}</noscript>
-<script>window.__SITE__=${siteData};try{${page === 'free-recipe' ? "localStorage.setItem('ep_unlock','1');" : ''}if(localStorage.getItem('ep_unlock')==='1')document.documentElement.classList.add('unlocked')}catch(e){}</script>
+<script>window.__SITE__=${siteData};try{if(localStorage.getItem('ep_unlock')==='1')document.documentElement.classList.add('unlocked')}catch(e){}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -232,6 +233,22 @@ const RAYS = `<svg class="rays" viewBox="0 0 400 400" aria-hidden="true"><g stro
 const ALERT = '<svg class="alert" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.4v.1"/></svg>';
 const SHIELD = '<svg class="shield" viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5L16 9.5"/></svg>';
 const NEWS = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v9a2 2 0 0 1-2 2"/><path d="M7.5 9h6M7.5 12.5h6M7.5 16h3"/></svg>';
+
+// "A look inside": auto-rotating carousel (swipe/scroll works without JS; JS adds autoplay, lift and dots)
+const carousel = (items) => `<div class="carousel" role="region" aria-roledescription="carousel" aria-label="${esc(cfg.inside.title)}">
+  <div class="car-track" tabindex="0">${items
+    .map(
+      (p, i) =>
+        `<article class="piece slide" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${items.length}"><div class="cover"><img src="${esc(p.src)}" alt="${esc(p.alt)}" width="800" height="1036" loading="${i < 2 ? 'eager' : 'lazy'}"><span class="num">${i + 1}</span></div><div class="piece-body"><h3>${esc(p.title)}</h3><p class="val">${esc(cfg.price.pieceValue)} value</p><p>${esc(p.text)}</p></div></article>`,
+    )
+    .join('')}</div>
+  <div class="car-ctrl">
+    <button type="button" class="car-btn" data-dir="-1" aria-label="Previous piece"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <div class="dots">${items.map((p, i) => `<button type="button" class="dot" data-i="${i}" aria-label="Go to piece ${i + 1}: ${esc(p.title)}"></button>`).join('')}</div>
+    <button type="button" class="car-btn" data-dir="1" aria-label="Next piece"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button type="button" class="car-btn car-pause" aria-label="Pause automatic rotation" data-pause><svg class="i-pause" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></button>
+  </div>
+</div>`;
 
 function home() {
   const c = cfg;
@@ -336,9 +353,7 @@ function home() {
     {
       bg: 'cream',
       id: 'look',
-      html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p><div class="pieces">${c.inside.items
-        .map((p, i) => `<article class="piece"><div class="cover"><img src="${esc(p.src)}" alt="${esc(p.alt)}" width="800" height="1036" loading="lazy"><span class="num">${i + 1}</span></div><div class="piece-body"><h3>${esc(p.title)}</h3><p class="val">${esc(c.price.pieceValue)} value</p><p>${esc(p.text)}</p></div></article>`)
-        .join('')}</div><div class="deal">${priceBox({ stack: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
+      html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p>${carousel(c.inside.items)}<div class="deal">${priceBox({ stack: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
     },
     // 6. Pain
     {
@@ -431,6 +446,7 @@ ${modal()}`;
 function recipePage() {
   const r = cfg.recipePage;
   const rv = r.reveal;
+  const cf = r.confirm;
   const list = (items) => `<ul>${items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
   const sections = [
     {
@@ -458,16 +474,30 @@ function recipePage() {
     {
       bg: 'tint',
       cls: 'reveal',
-      html: `<div class="wrap narrow center"><div class="cta-card">
-        <div class="modal-ico">${icon('gift', 30)}</div>
-        <h2>${esc(rv.title)}</h2>${deco}
-        <p>${esc(rv.text)}</p>
-        <div class="code-box"><span class="code-label">${esc(rv.codeLabel)}</span><strong class="code" id="coupon-code">${esc(cfg.price.coupon.code)}</strong><button type="button" class="copy-btn" data-copy="${esc(cfg.price.coupon.code)}" data-copied="${esc(rv.copied)}">${esc(rv.copy)}</button></div>
-        <p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span></p>
-        ${cta(rv.cta, rv.support, 'recipe')}
-        <p class="bonus">${HEART} ${esc(rv.bonus)}</p>
-        <p class="back"><a href="/">${esc(rv.back)}</a></p>
-      </div></div>`,
+      html: `<div class="wrap narrow center">
+        <form class="cta-card confirm" id="confirm-form" novalidate>
+          <div class="modal-ico">${icon('check', 30)}</div>
+          <h2>${esc(cf.title)}</h2>${deco}
+          <p>${esc(cf.text)}</p>
+          <label class="read"><input type="checkbox" name="read" required> <span>${esc(cf.readLabel)}</span></label>
+          <fieldset class="choices"><legend>${esc(cf.likelyTitle)}</legend>${cf.likely.map((x, i) => `<label class="choice"><input type="radio" name="likely" value="${i}" required><span>${esc(x)}</span></label>`).join('')}</fieldset>
+          <fieldset class="choices"><legend>${esc(cf.thinkTitle)}</legend>${cf.think.map((x, i) => `<label class="choice"><input type="radio" name="think" value="${i}" required><span>${esc(x)}</span></label>`).join('')}</fieldset>
+          <p class="form-error" id="confirm-error" hidden>Please check the box and pick an answer for each question.</p>
+          <button class="btn" type="submit">${esc(cf.button)}</button>
+          <p class="cta-note">${HEART} ${esc(cf.note)}</p>
+        </form>
+        <div class="cta-card congrats" id="congrats" hidden>
+          <div class="party" aria-hidden="true">${HEART}${HEART}${HEART}</div>
+          <h2>${esc(rv.title)}</h2>${deco}
+          <p class="lead-c">${esc(rv.text)}</p>
+          <div class="code-box"><span class="code-label">${esc(rv.codeLabel)}</span><strong class="code" id="coupon-code">${esc(cfg.price.coupon.code)}</strong><button type="button" class="copy-btn" data-copy="${esc(cfg.price.coupon.code)}" data-copied="${esc(rv.copied)}">${esc(rv.copy)}</button></div>
+          <p>${esc(rv.active)}</p>
+          <p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span></p>
+          ${cta(rv.cta, rv.support, 'recipe')}
+          <p class="bonus">${HEART} ${esc(rv.bonus)}</p>
+          <p class="back"><a href="/">${esc(rv.back)}</a></p>
+        </div>
+      </div>`,
     },
   ];
   const body = `

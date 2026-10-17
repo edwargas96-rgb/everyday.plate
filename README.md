@@ -7,7 +7,7 @@ Look: cream background, navy `#172B4D` + action blue `#2563EB`, hearts and short
 1. **Hook** (navy band, very first thing, above the logo): "Heard “prediabetes” and left with zero idea what to eat?" · B version: `/?v=b`
 2. **Logo + the deliverable** (kit mockup, badges, name, promise)
 3. **U.S. news card** (CDC data: 115.2 million adults; 31.3 million age 65+) + **GET A FREE RECIPE** button (`freeRecipe.url` / `FREE_RECIPE_URL`; flow to be structured later)
-4. **A look inside**: the 6 covers, each with a short synopsis (replaces the old "What's in the kit")
+4. **A look inside**: auto-rotating carousel of the 6 covers with a short synopsis each (the active card lifts; swipe, arrows, dots and a pause button work; autoplay is off with reduced-motion)
 5. **Pain** ("Sound familiar?" cards, "Now what do I eat?") → **buy button 1** → Print what you need → How it works → **buy button 2**
 6. Dietitian review / customer reviews / creator (hidden until real)
 7. Is this kit a good fit? (for / not for) → guarantee → FAQ → final offer → **buy button 3** → footer
@@ -15,7 +15,7 @@ Pages: `/terms/`, `/privacy/`, `/disclaimer/`, `/contact/`, `/thank-you/` (Purch
 Sections are colored bands joined by wave dividers; colors alternate automatically, so adding or hiding a section never breaks the rhythm.
 
 ## Price and the HEALTH coupon
-- Full price **$90** (6 pieces × $15). Opening the free recipe (`/free-recipe/`) unlocks coupon **HEALTH**: **$19.90**. The unlock is saved in that browser (`localStorage`), so every price on the site switches to $19.90 with $90 crossed out.
+- Full price **$90** (6 pieces × $15). Reading the free recipe (`/free-recipe/`) and confirming it unlocks coupon **HEALTH**: **$19.90**. At the end of the recipe the visitor ticks "I read the recipe", picks how likely they are to make it and what they think of it, then sees a congratulations message with the code. Answers stay on the device (nothing is sent). The unlock is saved in that browser (`localStorage`), so every price on the site switches to $19.90 with $90 crossed out.
 - Buying before opening the recipe: the buy button opens a suggestion ("your free recipe is waiting": coupon + one more dish on the menu). "No thanks, continue at $90" goes to the normal checkout.
 - Unlocked buyers are sent to the checkout with `?coupon=HEALTH` (`price.coupon.param`). **In your checkout (merchant of record)** create the product at $90 and the coupon HEALTH = $19.90, confirm the URL parameter that applies it, then set `price.coupon.confirmedWithMerchant: true`. Buyers can also type the code (a copy button is on the recipe page).
 - All numbers and texts: `price` and `pricing` in `site.config.mjs`. The free recipe itself: `recipePage`.
