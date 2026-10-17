@@ -41,3 +41,8 @@ Import this repo (framework preset: Other; `vercel.json` sets build and output).
 
 ## Guardrails
 `npm run check` (also on every Vercel build) fails on: cure, reverse, treat, heal, A1C, guaranteed, reset, fix, solution, control, ebook, "get off medication", "diabetes-proof", "you have prediabetes", the old brand names, "The Everyday Plate" spelling, the hook must stay above the logo. A short line ("Educational information only, not medical advice" + link) sits under every buy button; the full disclaimer is in the footer and on `/disclaimer/`. No invented reviews, credentials or counts.
+
+
+## Update: coupon and free recipe
+- The coupon HEALTH ($19) is now revealed after the visitor tears through every sheet of the “Sound familiar?” section. It is saved on the device and added to the checkout link.
+- The free-recipe button and `/free-recipe/` page are paused (`freeRecipe.enabled: false` in `site.config.mjs`). Set it to `true` to bring them back.

@@ -63,7 +63,8 @@ const JS_V = ver('src/site.js');
 const siteUrl = cfg.site.url.replace(/\/$/, '');
 const checkoutSet = !/\[\[/.test(cfg.checkoutUrl);
 const checkoutHref = checkoutSet ? cfg.checkoutUrl : '#buy';
-const freeHref = /\[\[/.test(cfg.freeRecipe.url) ? '#free-recipe' : cfg.freeRecipe.url;
+const freeOn = cfg.freeRecipe.enabled;
+const freeHref = !freeOn ? '#tear' : /\[\[/.test(cfg.freeRecipe.url) ? '#free-recipe' : cfg.freeRecipe.url;
 
 // Edit slot: visible only in draft mode, never on the live page.
 const slot = (label) => (draft ? `<div class="slot"><strong>Edit slot:</strong> ${esc(label)} <span>(hidden on the live page until filled)</span></div>` : '');
@@ -256,7 +257,7 @@ const carousel = (items) => `<div class="preview-carousel" role="region" aria-ro
 
 function home() {
   const c = cfg;
-  const freeSet = !/\[\[/.test(c.freeRecipe.url);
+  const freeSet = !freeOn || !/\[\[/.test(c.freeRecipe.url);
 
   const hookVariant = (v, tag) => {
     const h = c.hook[v];
@@ -341,10 +342,19 @@ function home() {
       cls: 'tear-band',
       html: `${RAYS}<div class="wrap narrow center">
         <h2>${esc(c.tear.title)}</h2>
-        <div class="tear" id="tear" data-done="${esc(c.tear.done)}">
+        <div class="tear" id="tear">
           <ol class="sheets">${c.tear.sheets.map((x) => `<li class="sheet"><div class="half l"><span>${esc(x)}</span></div><div class="half r" aria-hidden="true"><span>${esc(x)}</span></div></li>`).join('')}</ol>
           <p class="tear-hint" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v14M6 12l6 6 6-6"/></svg> ${esc(c.tear.hint)}</p>
-          <p class="tear-done" hidden>${esc(c.tear.done)} <a href="#look">${esc(c.tear.doneLink)}</a></p>
+          <div class="cta-card congrats tear-done" id="tear-reveal" hidden>
+            <div class="party" aria-hidden="true">${HEART}${HEART}${HEART}</div>
+            <h2>${esc(c.tear.reveal.title)}</h2>${deco}
+            <p class="lead-c">${esc(c.tear.reveal.text)}</p>
+            <div class="code-box"><span class="code-label">${esc(c.tear.reveal.codeLabel)}</span><strong class="code">${esc(cfg.price.coupon.code)}</strong><button type="button" class="copy-btn" data-copy="${esc(cfg.price.coupon.code)}" data-copied="${esc(c.tear.reveal.copied)}">${esc(c.tear.reveal.copy)}</button></div>
+            <p>${esc(c.tear.reveal.active)}</p>
+            <p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span></p>
+            ${cta(c.tear.reveal.cta, c.tear.reveal.support, 'tear')}
+            <p class="back"><a href="#look">${esc(c.tear.reveal.link)}</a></p>
+          </div>
           <a class="tear-skip" href="#look">${esc(c.tear.skip)}</a>
         </div>
       </div>`,
@@ -355,8 +365,8 @@ function home() {
       id: 'look',
       html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p>${carousel(c.inside.items)}<div class="deal">${priceBox({ stack: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
     },
-    // free recipe button (right after the look inside)
-    {
+    // free recipe button (paused)
+    ...(!freeOn ? [] : [{
       bg: 'tint',
       cls: 'free-band',
       html: `<div class="wrap narrow center">
@@ -365,7 +375,7 @@ function home() {
           <p class="cta-note">${HEART} ${esc(c.freeRecipe.support)}</p>
         </div>
       </div>`,
-    },
+    }]),
     // News
     {
       bg: 'tint',
@@ -591,7 +601,7 @@ const pages = [
   ['privacy/index.html', textPage('privacy', '/privacy/')],
   ['disclaimer/index.html', textPage('disclaimer', '/disclaimer/')],
   ['contact/index.html', contact()],
-  ['free-recipe/index.html', recipePage()],
+  ...(freeOn ? [['free-recipe/index.html', recipePage()]] : []),
   ['thank-you/index.html', thankYou()],
 ];
 
@@ -607,7 +617,7 @@ await cp(path.join(root, 'src', 'styles.css'), path.join(dist, 'styles.css'));
 await cp(path.join(root, 'src', 'site.js'), path.join(dist, 'site.js'));
 await writeFile(path.join(dist, 'robots.txt'), `User-agent: *\nDisallow: /thank-you/\n${siteUrl ? `Sitemap: ${siteUrl}/sitemap.xml\n` : ''}`);
 if (siteUrl) {
-  const urls = ['/', '/free-recipe/', '/terms/', '/privacy/', '/disclaimer/', '/contact/'];
+  const urls = ['/', ...(freeOn ? ['/free-recipe/'] : []), '/terms/', '/privacy/', '/disclaimer/', '/contact/'];
   await writeFile(
     path.join(dist, 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${siteUrl}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
@@ -619,7 +629,7 @@ const blockers = new Set();
 for (const [, html] of pages) for (const m of html.matchAll(/<mark class="ph"[^>]*>\[(.+?)\]<\/mark>/g)) blockers.add(m[1]);
 if (!checkoutSet) blockers.add('CHECKOUT_URL');
 if (!cfg.price.coupon.confirmedWithMerchant) blockers.add(`Checkout: product at ${cfg.price.display}, coupon ${cfg.price.coupon.code} = ${cfg.price.coupon.display}, and its URL parameter (price.coupon.param); then set confirmedWithMerchant`);
-if (/\[\[/.test(cfg.freeRecipe.url)) blockers.add('FREE_RECIPE_URL (where the free recipe button goes)');
+if (freeOn && /\[\[/.test(cfg.freeRecipe.url)) blockers.add('FREE_RECIPE_URL (where the free recipe button goes)');
 for (const [k, v] of Object.entries(cfg.pages)) if (v.draft) blockers.add(`Attorney review of the ${k} page`);
 if (/placeholder/i.test(cfg.images.kitMockup)) blockers.add('Kit mockup image (images.kitMockup is still a placeholder)');
 if (cfg.inside.items.some((p) => /placeholder/i.test(p.src))) blockers.add('Cover images (inside.items are still placeholders)');

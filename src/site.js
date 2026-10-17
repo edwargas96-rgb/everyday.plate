@@ -29,7 +29,7 @@
     track('Purchase', { content_name: S.contentName, value: isNaN(v) ? current().value : v, currency: S.currency });
   }
 
-  $all('a[data-free]').forEach(function (a) { a.addEventListener('click', function () { track('Lead', { content_name: 'Free recipe' }); }); });
+  $all('a[data-free]').forEach(function (a) { a.addEventListener('click', function () { var m = document.getElementById('unlock-modal'); if (m && m.open) m.close(); }); });
 
   // ---- Checkout links: utm_*/fbclid pass through; coupon added once unlocked ----
   var pass = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'];
@@ -91,10 +91,10 @@
 
   // ---- Tear-the-page intro: swipe down (or tap) to rip each sheet, then move on to "A look inside" ----
   var tear = document.getElementById('tear');
-  if (tear && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+  if (tear) {
     root.classList.add('js-tear');
     var sheets = $all('.sheet', tear), cur = 0;
-    var doneEl = tear.querySelector('.tear-done');
+    var doneEl = document.getElementById('tear-reveal');
     function place() {
       sheets.forEach(function (sh, i) {
         if (i < cur) { sh.classList.add('gone'); sh.removeAttribute('data-pos'); return; }
@@ -107,8 +107,8 @@
     }
     function finish() {
       tear.classList.add('is-done'); if (doneEl) doneEl.hidden = false;
-      var look = document.getElementById('look');
-      if (look) setTimeout(function () { look.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 900);
+      if (!unlocked) { unlock(); track('Lead', { content_name: 'Discount unlocked' }); trackCustom('DiscountUnlocked'); }
+      if (doneEl) setTimeout(function () { doneEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
     }
     function ripOff(sh) {
       var half = sh.querySelectorAll('.half');
@@ -139,7 +139,8 @@
       sh.addEventListener('pointercancel', function () { y0 = null; sh.classList.add('snap'); setP(sh, 0); });
       sh.addEventListener('keydown', function (e) { if (i === cur && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); sh.classList.add('snap'); ripOff(sh); } });
     });
-    place();
+    if (unlocked) { sheets.forEach(function (x) { x.classList.add('gone'); }); tear.classList.add('is-done'); if (doneEl) doneEl.hidden = false; }
+    else place();
   }
 
   // ---- Copy the coupon code ----

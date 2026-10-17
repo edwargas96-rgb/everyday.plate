@@ -321,10 +321,15 @@ html.unlocked .pb-big{color:var(--blue)}
 .tear-hint{display:none;align-items:center;justify-content:center;gap:6px;margin:1.2em 0 0;color:var(--sky);font-weight:700;font-size:.95rem}
 .js-tear .tear-hint{display:flex;animation:nudge 1.6s ease-in-out infinite}
 @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-.tear-done{font-family:var(--serif);font-size:1.5rem;color:#fff;margin:.4em 0 0}
-.tear-done a{display:block;margin-top:.5em;font-family:var(--sans);font-size:1rem;font-weight:700;color:var(--sky)}
+.tear-done{margin-top:1.2em}
 .tear-skip{display:none;margin-top:.6em;font-size:.9rem;color:var(--sky);opacity:.8}
 .js-tear .tear-skip{display:inline-block}
 .tear.is-done .tear-skip,.tear.is-done .tear-hint,.tear.is-done .sheets{display:none}
 html:not(.js-tear) .sheets{display:grid;gap:12px}
-@media (prefers-reduced-motion:reduce){.js-tear .tear-hint{animation:none}}
+@media (prefers-reduced-motion:reduce){.js-tear .tear-hint{animation:none}.js-tear .sheet,.js-tear .sheet.snap .half{transition:none!important}}
+.tear-band .cta-card h2,.tear-band .cta-card p{color:var(--navy)}
+.tear-band .cta-card .cta-note{color:var(--muted)}
+.tear-band .cta-card .mini-disc{color:var(--muted)}
+.tear-band .cta-card .pb-big{color:var(--blue)}
+.tear-band .cta-card a:not(.btn){color:var(--blue)}
+.tear-band .tear-done[hidden]{display:none}
