@@ -115,10 +115,10 @@ img{max-width:100%}
 .print-ico{width:68px;height:68px;border-radius:50%;background:var(--tint);color:var(--blue);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 .print-card .chips li{background:var(--cream)}
 .strip{display:grid;gap:14px;margin-top:30px}.strip img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:var(--r-lg);box-shadow:var(--shadow)}
-.pages{display:grid;gap:26px;margin:1.6em auto 0;max-width:340px}
+.pages{display:grid;grid-template-columns:1fr 1fr;gap:18px 14px;margin:1.6em auto 0;max-width:1000px}
 .pages figure{margin:0}
 .pages img{width:100%;height:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff;box-shadow:var(--shadow)}
-.pages figcaption{text-align:center;font-family:var(--serif);color:var(--navy);margin-top:12px}
+.pages figcaption{text-align:center;font-family:var(--serif);color:var(--navy);margin-top:10px;font-size:.95rem;line-height:1.3}
 
 /* steps */
 .steps{list-style:none;padding:0;margin:1.4em 0}
@@ -190,7 +190,7 @@ mark.ph{background:#FEF08A;color:#422006;border:1px dashed #A16207;padding:1px 6
   .hook h1,.hook .h1{font-size:4rem}.hook-sub{font-size:1.4rem}
   .wave{height:56px}.logo{height:62px}.logo-xl{width:380px}
   .pains{grid-template-columns:1fr 1fr}.bigline{font-size:3.6rem}
-  .kit{grid-template-columns:1fr 1fr}.strip{grid-template-columns:repeat(3,1fr)}.pages{grid-template-columns:repeat(3,1fr);gap:28px;max-width:1000px}
+  .kit{grid-template-columns:1fr 1fr}.strip{grid-template-columns:repeat(3,1fr)}.pages{grid-template-columns:repeat(3,1fr);gap:34px 28px}.pages figcaption{font-size:1.05rem}
   .two{grid-template-columns:1fr 1fr}.person{flex-direction:row}
   .news{padding:30px 34px 32px 40px}.big-num{font-size:4.4rem}.news h2{font-size:1.8rem}
   .cta-card{padding:46px 40px}.footer-top{flex-direction:row;align-items:center;justify-content:space-between}

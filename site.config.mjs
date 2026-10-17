@@ -189,11 +189,14 @@ export default {
   // ---------- 5. A look inside (2 previews) ----------
   look: {
     title: 'A look inside',
-    intro: 'Three of the six pieces.',
+    intro: 'All six pieces of the kit.',
     pages: [
       { src: '/images/cover-fridge-chart.webp', alt: 'Cover of the Fridge Chart, the Everyday Food Guide', caption: 'Fridge Chart' },
       { src: '/images/cover-meal-plan.webp', alt: 'Cover of the 14-Day Meal Plan', caption: '14-Day Meal Plan' },
       { src: '/images/cover-grocery-lists.webp', alt: 'Cover of the Weekly Grocery Lists, Week 1 and Week 2', caption: 'Weekly Grocery Lists' },
+      { src: '/images/cover-recipe-cards.webp', alt: 'Cover of the 30 Simple Recipes, recipe cards', caption: '30 Recipe Cards' },
+      { src: '/images/cover-tracker.webp', alt: 'Cover of the 14-Day Tracker, meals and everyday habits', caption: '14-Day Habit & Meal Tracker' },
+      { src: '/images/cover-questions-for-my-doctor.webp', alt: 'Cover of Questions for My Doctor', caption: 'Questions for My Doctor' },
     ],
   },
 
