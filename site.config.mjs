@@ -125,9 +125,9 @@ export default {
     kicker: 'Your free recipe',
     title: 'Chicken Fajita Skillet',
     sub: 'One pan, color on the plate and dinner on the table in about 30 minutes.',
-    image: '/images/free-recipe-chicken-fajitas.webp',
+    image: '/images/free-recipe-fajitas-square.webp',
     imageAlt: 'A black skillet of sliced chicken fajitas with red, yellow and green bell peppers and onions, with lime wedges, pico de gallo, tortillas and avocado nearby',
-    imageSize: [900, 1350],
+    imageSize: [900, 900],
     facts: [
       { k: 'Prep', v: '15 min' },
       { k: 'Cook', v: '15 min' },

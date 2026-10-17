@@ -97,57 +97,56 @@
     });
   });
 
-  // ---- "A look inside" carousel: auto-rotates, the active card lifts; swipe, arrows and dots work ----
-  $all('.carousel').forEach(function (car) {
-    var track = car.querySelector('.car-track');
-    var slides = $all('.slide', track), dots = $all('.dot', car), pauseBtn = car.querySelector('[data-pause]');
-    var idx = 0, timer = null, userPaused = false, hovering = false, visible = false, resume = null;
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    function left(i) { var s = slides[i]; return s.offsetLeft - (track.clientWidth - s.clientWidth) / 2; }
-    function mark(i) {
-      slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
-      dots.forEach(function (d, k) { if (k === i) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); });
+  // ---- "A look inside": endless auto-scrolling carousel (same base as the Active Tu Ingles mind-map carousel) ----
+  // Two identical groups; the scroll position wraps between them. Swipe/drag works both ways; a touch or drag
+  // holds the motion for a moment; the pause button (or a tap) stops and resumes it.
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  $all('.preview-carousel').forEach(function (el) {
+    var group = el.querySelector('.carousel-group');
+    if (!group) return;
+    var duration = 50; // seconds to travel one full group
+    var pos = 0, userPaused = false, touching = false, resumeAt = 0, last = 0, down = null, moved = false, visible = true;
+    var pauseBtn = el.parentNode.querySelector('[data-pause]');
+    function width() { return group.offsetWidth; }
+    function wrap() {
+      var g = width(); if (!g) return;
+      if (pos < g * 0.25) pos += g; else if (pos > g * 1.25) pos -= g;
+      el.scrollLeft = pos;
     }
-    function go(i, smooth) {
-      idx = (i + slides.length) % slides.length;
-      track.scrollTo({ left: left(idx), behavior: smooth === false || reduce ? 'auto' : 'smooth' });
-      mark(idx);
+    function holdOff(ms) { resumeAt = Date.now() + ms; }
+    function setPaused(p) {
+      userPaused = p; el.classList.toggle('is-paused', p);
+      if (pauseBtn) pauseBtn.setAttribute('aria-label', p ? 'Resume the moving carousel' : 'Pause the moving carousel');
     }
-    function nearest() {
-      var mid = track.scrollLeft + track.clientWidth / 2, best = 0, bd = 1e9;
-      slides.forEach(function (s, k) { var d = Math.abs(s.offsetLeft + s.clientWidth / 2 - mid); if (d < bd) { bd = d; best = k; } });
-      return best;
+    function tick(t) {
+      var dt = last ? Math.min(t - last, 64) : 16; last = t;
+      var g = width();
+      if (g && visible && !reduce && !userPaused && !touching && !down && Date.now() >= resumeAt) { pos += (g / duration) * (dt / 1000); wrap(); }
+      requestAnimationFrame(tick);
     }
-    var raf;
-    track.addEventListener('scroll', function () { cancelAnimationFrame(raf); raf = requestAnimationFrame(function () { idx = nearest(); mark(idx); }); }, { passive: true });
-    function stop() { clearInterval(timer); timer = null; }
-    function play() { stop(); if (reduce || userPaused || hovering || !visible) return; timer = setInterval(function () { go(idx + 1); }, 3800); }
-    function later() { clearTimeout(resume); resume = setTimeout(play, 6000); }
-    car.addEventListener('mouseenter', function () { hovering = true; stop(); });
-    car.addEventListener('mouseleave', function () { hovering = false; play(); });
-    track.addEventListener('touchstart', function () { stop(); clearTimeout(resume); }, { passive: true });
-    track.addEventListener('touchend', later, { passive: true });
-    car.addEventListener('focusin', stop);
-    car.addEventListener('focusout', play);
-    $all('.car-btn[data-dir]', car).forEach(function (b) { b.addEventListener('click', function () { go(idx + parseInt(b.getAttribute('data-dir'), 10)); stop(); later(); }); });
-    dots.forEach(function (d) { d.addEventListener('click', function () { go(parseInt(d.getAttribute('data-i'), 10)); stop(); later(); }); });
-    track.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight') { e.preventDefault(); go(idx + 1); stop(); later(); }
-      if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx - 1); stop(); later(); }
+    function init() { var g = width(); if (!g) return false; pos = g * 0.5; el.scrollLeft = pos; return true; }
+    el.addEventListener('scroll', function () {
+      if (Math.abs(el.scrollLeft - pos) > 1.5) {
+        pos = el.scrollLeft; holdOff(2500);
+        var g = width(); if (g && (pos < g * 0.25 || pos > g * 1.25)) wrap();
+      }
+    }, { passive: true });
+    el.addEventListener('touchstart', function () { touching = true; }, { passive: true });
+    el.addEventListener('touchend', function () { touching = false; holdOff(2500); }, { passive: true });
+    el.addEventListener('touchcancel', function () { touching = false; holdOff(2500); }, { passive: true });
+    el.addEventListener('pointerdown', function (e) { moved = false; if (e.pointerType !== 'mouse' || e.button !== 0) return; down = { x: e.clientX, left: el.scrollLeft }; });
+    window.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - down.x;
+      if (Math.abs(dx) > 6) { moved = true; el.classList.add('is-dragging'); }
+      if (moved) { pos = down.left - dx; wrap(); }
     });
-    if (pauseBtn) {
-      if (reduce) { userPaused = true; pauseBtn.classList.add('paused'); pauseBtn.setAttribute('aria-label', 'Start automatic rotation'); }
-      pauseBtn.addEventListener('click', function () {
-        userPaused = !userPaused;
-        pauseBtn.classList.toggle('paused', userPaused);
-        pauseBtn.setAttribute('aria-label', userPaused ? 'Start automatic rotation' : 'Pause automatic rotation');
-        if (userPaused) stop(); else play();
-      });
-    }
-    window.addEventListener('resize', function () { go(idx, false); });
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) play(); else stop(); }, { threshold: 0.35 }).observe(car);
-    } else { visible = true; play(); }
-    requestAnimationFrame(function () { go(0, false); });
+    window.addEventListener('pointerup', function () { if (!down) return; down = null; el.classList.remove('is-dragging'); holdOff(2500); });
+    el.addEventListener('click', function () { if (moved) { moved = false; return; } setPaused(!userPaused); });
+    if (pauseBtn) pauseBtn.addEventListener('click', function () { setPaused(!userPaused); });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }, { threshold: 0.1 }).observe(el);
+    if (reduce) setPaused(true);
+    function start() { if (!init()) return; requestAnimationFrame(tick); }
+    if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
   });
 })();

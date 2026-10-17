@@ -7,7 +7,7 @@ Look: cream background, navy `#172B4D` + action blue `#2563EB`, hearts and short
 1. **Hook** (navy band, very first thing, above the logo): "Heard “prediabetes” and left with zero idea what to eat?" · B version: `/?v=b`
 2. **Logo + the deliverable** (kit mockup, badges, name, promise)
 3. **U.S. news card** (CDC data: 115.2 million adults; 31.3 million age 65+) + **GET A FREE RECIPE** button (`freeRecipe.url` / `FREE_RECIPE_URL`; flow to be structured later)
-4. **A look inside**: auto-rotating carousel of the 6 covers with a short synopsis each (the active card lifts; swipe, arrows, dots and a pause button work; autoplay is off with reduced-motion)
+4. **A look inside**: endless auto-scrolling carousel of the 6 covers (same base as the Active Tu Ingles mind-map carousel): it moves by itself, swipe/drag works both ways, a touch holds it for a moment, a tap or the pause button stops it; off with reduced-motion
 5. **Pain** ("Sound familiar?" cards, "Now what do I eat?") → **buy button 1** → Print what you need → How it works → **buy button 2**
 6. Dietitian review / customer reviews / creator (hidden until real)
 7. Is this kit a good fit? (for / not for) → guarantee → FAQ → final offer → **buy button 3** → footer

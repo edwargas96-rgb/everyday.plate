@@ -3,6 +3,8 @@
 //   SHOW_DRAFT=1          shows dashed "edit slots" for sections that are still empty (npm run dev)
 //   STRICT_PLACEHOLDERS=1 fails the build while any launch blocker is open (npm run launch-check)
 import { mkdir, rm, cp, writeFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -54,6 +56,10 @@ const esc = (s = '') =>
     .replaceAll(PRICE_TOKEN, `<span data-price>${raw.price.display}</span>`);
 // Escape, then turn [[placeholder]] into a visible highlighted marker.
 const t = (s = '') => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark class="ph" title="Placeholder: replace before launch">[$1]</mark>');
+// Asset versioning: the browser can't keep an old stylesheet/script after a new deploy.
+const ver = (f) => createHash('md5').update(readFileSync(path.join(root, f))).digest('hex').slice(0, 8);
+const CSS_V = ver('src/styles.css');
+const JS_V = ver('src/site.js');
 const siteUrl = cfg.site.url.replace(/\/$/, '');
 const checkoutSet = !/\[\[/.test(cfg.checkoutUrl);
 const checkoutHref = checkoutSet ? cfg.checkoutUrl : '#buy';
@@ -166,7 +172,7 @@ ${ogImage ? `<meta property="og:image" content="${esc(og)}"><meta property="og:i
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/Lora-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/SourceSans3.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles.css?v=${CSS_V}">
 ${pixel}
 <noscript>${pixelId ? `<img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=${esc(pixelId)}&ev=PageView&noscript=1">` : ''}</noscript>
 <script>window.__SITE__=${siteData};try{if(localStorage.getItem('ep_unlock')==='1')document.documentElement.classList.add('unlocked')}catch(e){}</script>
@@ -174,7 +180,7 @@ ${pixel}
 <body>
 <a class="skip" href="#main">Skip to content</a>
 ${body}
-<script src="/site.js" defer></script>
+<script src="/site.js?v=${JS_V}" defer></script>
 </body>
 </html>`;
 }
@@ -234,21 +240,17 @@ const ALERT = '<svg class="alert" viewBox="0 0 24 24" width="20" height="20" fil
 const SHIELD = '<svg class="shield" viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5L16 9.5"/></svg>';
 const NEWS = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v9a2 2 0 0 1-2 2"/><path d="M7.5 9h6M7.5 12.5h6M7.5 16h3"/></svg>';
 
-// "A look inside": auto-rotating carousel (swipe/scroll works without JS; JS adds autoplay, lift and dots)
-const carousel = (items) => `<div class="carousel" role="region" aria-roledescription="carousel" aria-label="${esc(cfg.inside.title)}">
-  <div class="car-track" tabindex="0">${items
-    .map(
-      (p, i) =>
-        `<article class="piece slide" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${items.length}"><div class="cover"><img src="${esc(p.src)}" alt="${esc(p.alt)}" width="800" height="1036" loading="${i < 2 ? 'eager' : 'lazy'}"><span class="num">${i + 1}</span></div><div class="piece-body"><h3>${esc(p.title)}</h3><p class="val">${esc(cfg.price.pieceValue)} value</p><p>${esc(p.text)}</p></div></article>`,
-    )
-    .join('')}</div>
-  <div class="car-ctrl">
-    <button type="button" class="car-btn" data-dir="-1" aria-label="Previous piece"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-    <div class="dots">${items.map((p, i) => `<button type="button" class="dot" data-i="${i}" aria-label="Go to piece ${i + 1}: ${esc(p.title)}"></button>`).join('')}</div>
-    <button type="button" class="car-btn" data-dir="1" aria-label="Next piece"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
-    <button type="button" class="car-btn car-pause" aria-label="Pause automatic rotation" data-pause><svg class="i-pause" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></button>
+// "A look inside": endless auto-scrolling carousel. Two identical groups give a seamless loop;
+// site.js moves it, and visitors can still swipe or drag it in both directions.
+const slideHtml = (p, i, dup) =>
+  `<article class="carousel-slide"><div class="cover"><img src="${esc(p.src)}" alt="${dup ? '' : esc(p.alt)}" width="800" height="1036" loading="${!dup && i < 2 ? 'eager' : 'lazy'}" decoding="async" draggable="false"><span class="num">${i + 1}</span></div><div class="piece-body"><h3>${esc(p.title)}</h3><p class="val">${esc(cfg.price.pieceValue)} value</p><p>${esc(p.text)}</p></div></article>`;
+const carousel = (items) => `<div class="preview-carousel" role="region" aria-roledescription="carousel" aria-label="${esc(cfg.inside.title)}">
+  <div class="carousel-track">
+    <div class="carousel-group">${items.map((p, i) => slideHtml(p, i, false)).join('')}</div>
+    <div class="carousel-group" aria-hidden="true">${items.map((p, i) => slideHtml(p, i, true)).join('')}</div>
   </div>
-</div>`;
+</div>
+<div class="car-tools"><button type="button" class="car-pause" data-pause aria-label="Pause the moving carousel"><svg class="i-pause" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></button><span>Swipe to look around</span></div>`;
 
 function home() {
   const c = cfg;
