@@ -2,7 +2,7 @@
 //  ALL page copy, prices, images and links live in THIS file.
 //  Edit here, run `npm run build`, deploy. No need to touch build.mjs or CSS.
 //
-//  Variables you can use inside any text: {price} (live: $90, or $19.90 once the coupon is unlocked)
+//  Variables you can use inside any text: {price} (live: $90, or $19 once the coupon is unlocked)
 //  {listPrice} {couponPrice} {couponCode} {brand} {days}
 //  {legalName} {supportEmail} {year}
 //
@@ -46,7 +46,7 @@ export default {
     amount: 90,
     display: '$90',
     pieceValue: '$15',
-    coupon: { code: 'HEALTH', amount: 19.9, display: '$19.90', param: 'coupon', confirmedWithMerchant: false },
+    coupon: { code: 'HEALTH', amount: 19, display: '$19', param: 'coupon', confirmedWithMerchant: false },
   },
   // Merchant-of-record checkout link (or set the CHECKOUT_URL env var in Vercel).
   // The $7 low-sugar snacks bump is a checkbox at checkout, not on this page.
@@ -364,7 +364,7 @@ export default {
   guarantee: {
     show: true,
     confirmedWithMerchant: false,
-    days: 30,
+    days: 14,
     title: '{days}-Day Money-Back Guarantee',
     text: 'Try the kit for {days} days. If it isn’t useful to you, email us and we’ll refund your purchase. No long forms, no hoops.',
   },

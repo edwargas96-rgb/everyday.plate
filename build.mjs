@@ -17,7 +17,7 @@ const draft = process.env.SHOW_DRAFT === '1';
 // ---------- variables: {price} {brand} {days} {legalName} ... usable in any config string ----------
 const days = raw.guarantee.days;
 const guaranteeText = raw.guarantee.text.replaceAll('{days}', days);
-const PRICE_TOKEN = '\u0001'; // {price} becomes <span data-price>: $90, or $19.90 once the coupon is unlocked
+const PRICE_TOKEN = '\u0001'; // {price} becomes <span data-price>: $90, or $19 once the coupon is unlocked
 const vars = {
   price: PRICE_TOKEN,
   listPrice: raw.price.display,

@@ -15,9 +15,9 @@ Pages: `/terms/`, `/privacy/`, `/disclaimer/`, `/contact/`, `/thank-you/` (Purch
 Sections are colored bands joined by wave dividers; colors alternate automatically, so adding or hiding a section never breaks the rhythm.
 
 ## Price and the HEALTH coupon
-- Full price **$90** (6 pieces × $15). Reading the free recipe (`/free-recipe/`) and confirming it unlocks coupon **HEALTH**: **$19.90**. At the end of the recipe the visitor ticks "I read the recipe", picks how likely they are to make it and what they think of it, then sees a congratulations message with the code. Answers stay on the device (nothing is sent). The unlock is saved in that browser (`localStorage`), so every price on the site switches to $19.90 with $90 crossed out.
+- Full price **$90** (6 pieces × $15). Reading the free recipe (`/free-recipe/`) and confirming it unlocks coupon **HEALTH**: **$19**. At the end of the recipe the visitor ticks "I read the recipe", picks how likely they are to make it and what they think of it, then sees a congratulations message with the code. Answers stay on the device (nothing is sent). The unlock is saved in that browser (`localStorage`), so every price on the site switches to $19 with $90 crossed out.
 - Buying before opening the recipe: the buy button opens a suggestion ("your free recipe is waiting": coupon + one more dish on the menu). "No thanks, continue at $90" goes to the normal checkout.
-- Unlocked buyers are sent to the checkout with `?coupon=HEALTH` (`price.coupon.param`). **In your checkout (merchant of record)** create the product at $90 and the coupon HEALTH = $19.90, confirm the URL parameter that applies it, then set `price.coupon.confirmedWithMerchant: true`. Buyers can also type the code (a copy button is on the recipe page).
+- Unlocked buyers are sent to the checkout with `?coupon=HEALTH` (`price.coupon.param`). **In your checkout (merchant of record)** create the product at $90 and the coupon HEALTH = $19, confirm the URL parameter that applies it, then set `price.coupon.confirmedWithMerchant: true`. Buyers can also type the code (a copy button is on the recipe page).
 - All numbers and texts: `price` and `pricing` in `site.config.mjs`. The free recipe itself: `recipePage`.
 
 ## Edit
