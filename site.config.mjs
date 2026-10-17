@@ -26,8 +26,8 @@ const env = process.env;
 export default {
   // ---------- Business / links ----------
   site: {
-    brand: 'The Every Day Plate', // always written exactly like this: 3 words
-    productName: 'The Every Day Plate',
+    brand: 'The Everyday Plate', // always written exactly like this: "The Everyday Plate" (one word)
+    productName: 'The Everyday Plate',
     productSubtitle: 'The 14-Day Printable Kit: Easy Meals, Grocery Lists & Daily Habits',
     url: env.SITE_URL || '', // e.g. https://yourdomain.com
     supportEmail: env.SUPPORT_EMAIL || '[[support@yourdomain.com]]',
@@ -55,7 +55,7 @@ export default {
     'Educational information only. Not medical advice. Talk to your doctor or a registered dietitian before changing your diet, especially if you take medication or have a medical condition.',
 
   seo: {
-    title: 'The Every Day Plate | The 14-Day Printable Kit: Easy Meals, Grocery Lists & Daily Habits',
+    title: 'The Everyday Plate | The 14-Day Printable Kit: Easy Meals, Grocery Lists & Daily Habits',
     description:
       'A 14-day printable kit: fridge chart, meal plan, grocery lists, 30 recipe cards and a tracker. Print it or view it on your phone. Instant PDF download.',
     ogImage: '/og.png',
@@ -112,7 +112,7 @@ export default {
   // ---------- 2. Product name + promise ----------
   meet: {
     eyebrow: 'Meet',
-    name: 'The Every Day Plate',
+    name: 'The Everyday Plate',
     subtitle: 'The 14-Day Printable Kit: Easy Meals, Grocery Lists & Daily Habits',
     promise: 'Know exactly what to eat, buy and do every day, so you stop guessing.',
     paragraphs: [
@@ -137,12 +137,12 @@ export default {
 
   // ---------- Buttons (3 on the page) ----------
   cta: {
-    first: { button: 'GET THE EVERY DAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
-    mid: { button: 'GET THE EVERY DAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
+    first: { button: 'GET THE EVERYDAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
+    mid: { button: 'GET THE EVERYDAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
     final: {
       title: 'Give your next grocery trip a clear plan.',
       lines: ['Six printable pieces.', 'Thirty recipe cards.', 'Fourteen days of meals, ready to stick on the fridge.'],
-      priceLine: 'The Every Day Plate: {price}',
+      priceLine: 'The Everyday Plate: {price}',
       button: 'GET MY 14-DAY PRINTABLE KIT',
       support: 'One-time purchase · Instant PDF download',
     },
@@ -196,7 +196,7 @@ export default {
 
   // ---------- 9. Creator (hidden until filled) ----------
   creator: {
-    title: 'Who created The Every Day Plate?',
+    title: 'Who created The Everyday Plate?',
     paragraphs: [],
     photo: '',
     photoAlt: '',
@@ -205,7 +205,7 @@ export default {
   // ---------- 10. Who it fits ----------
   fit: {
     title: 'Is this kit a good fit?',
-    intro: 'The Every Day Plate is an educational meal-planning kit for adults who want practical meal ideas they can see at a glance.',
+    intro: 'The Everyday Plate is an educational meal-planning kit for adults who want practical meal ideas they can see at a glance.',
     listIntro: 'It may suit you if you want:',
     items: [
       'A two-week starting point for organizing meals.',
