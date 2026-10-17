@@ -152,17 +152,17 @@ export default {
     chips: ['6 printable pieces', 'PDF · US Letter', 'Black & white or color', 'No app · No login · No subscription'],
   },
 
-  // ---------- 3. What's in the kit ----------
-  kit: {
-    title: 'What’s in the kit',
-    intro: 'Six simple pieces. Print them all, or just the ones you want.',
+  // ---------- 4b. A look inside: covers + a short synopsis of each of the 6 pieces ----------
+  inside: {
+    title: 'A look inside',
+    intro: 'Six printable pieces. Here’s what each one is for.',
     items: [
-      { icon: 'fridge', title: 'Fridge Chart', text: 'One page: “Eat More / Enjoy Sometimes / Go Easy On.” Stick it on your fridge.' },
-      { icon: 'calendar', title: '14-Day Meal Plan', text: 'One block per day: breakfast, lunch, dinner and a snack, in large, easy-to-read type.' },
-      { icon: 'cart', title: 'Weekly Grocery Lists', text: 'Two lists to check against your kitchen, including budget swaps.' },
-      { icon: 'recipe', title: '30 Recipe Cards', text: 'One recipe per page, with photos, servings, and carbs and fiber per serving. Regular grocery-store ingredients, ready in 30 minutes or less. No air fryer or Instant Pot needed.' },
-      { icon: 'tracker', title: '14-Day Habit & Meal Tracker', text: 'Check off meals, a 10-minute walk after eating, and sleep.' },
-      { icon: 'questions', title: 'Questions for My Doctor', text: 'One page to bring to your next appointment.' },
+      { src: '/images/cover-fridge-chart.webp', alt: 'Cover of the Fridge Chart, the Everyday Food Guide', title: 'Fridge Chart', text: 'One page: “Eat More / Enjoy Sometimes / Go Easy On.” Stick it on your fridge.' },
+      { src: '/images/cover-meal-plan.webp', alt: 'Cover of the 14-Day Meal Plan', title: '14-Day Meal Plan', text: 'One block per day: breakfast, lunch, dinner and a snack, in large, easy-to-read type.' },
+      { src: '/images/cover-grocery-lists.webp', alt: 'Cover of the Weekly Grocery Lists, Week 1 and Week 2', title: 'Weekly Grocery Lists', text: 'Two lists to check against your kitchen, including budget swaps.' },
+      { src: '/images/cover-recipe-cards.webp', alt: 'Cover of the 30 Simple Recipes, recipe cards', title: '30 Recipe Cards', text: 'One recipe per page, with photos, servings, and carbs and fiber per serving. Regular grocery-store ingredients, ready in 30 minutes or less. No air fryer or Instant Pot.' },
+      { src: '/images/cover-tracker.webp', alt: 'Cover of the 14-Day Tracker, meals and everyday habits', title: '14-Day Habit & Meal Tracker', text: 'Check off meals, a 10-minute walk after eating, and sleep.' },
+      { src: '/images/cover-questions-for-my-doctor.webp', alt: 'Cover of Questions for My Doctor', title: 'Questions for My Doctor', text: 'One page to bring to your next appointment.' },
     ],
   },
 
@@ -184,20 +184,6 @@ export default {
     title: 'Print what you need',
     text: 'Print it all or just the pages you want. Works in black and white. No app to download.',
     points: ['Prints on standard US Letter paper', 'Black and white or color', 'Or view it on your phone or tablet'],
-  },
-
-  // ---------- 5. A look inside (2 previews) ----------
-  look: {
-    title: 'A look inside',
-    intro: 'All six pieces of the kit.',
-    pages: [
-      { src: '/images/cover-fridge-chart.webp', alt: 'Cover of the Fridge Chart, the Everyday Food Guide', caption: 'Fridge Chart' },
-      { src: '/images/cover-meal-plan.webp', alt: 'Cover of the 14-Day Meal Plan', caption: '14-Day Meal Plan' },
-      { src: '/images/cover-grocery-lists.webp', alt: 'Cover of the Weekly Grocery Lists, Week 1 and Week 2', caption: 'Weekly Grocery Lists' },
-      { src: '/images/cover-recipe-cards.webp', alt: 'Cover of the 30 Simple Recipes, recipe cards', caption: '30 Recipe Cards' },
-      { src: '/images/cover-tracker.webp', alt: 'Cover of the 14-Day Tracker, meals and everyday habits', caption: '14-Day Habit & Meal Tracker' },
-      { src: '/images/cover-questions-for-my-doctor.webp', alt: 'Cover of Questions for My Doctor', caption: 'Questions for My Doctor' },
-    ],
   },
 
   // ---------- 6. How it works ----------

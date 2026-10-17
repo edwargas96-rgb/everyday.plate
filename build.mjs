@@ -289,6 +289,14 @@ function home() {
         </div>
       </div>`,
     },
+    // 4b. A look inside: the six covers with a short synopsis of each (replaces the old "What's in the kit")
+    {
+      bg: 'cream',
+      id: 'look',
+      html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p><div class="pieces">${c.inside.items
+        .map((p, i) => `<article class="piece"><div class="cover"><img src="${esc(p.src)}" alt="${esc(p.alt)}" width="800" height="1036" loading="lazy"><span class="num">${i + 1}</span></div><div class="piece-body"><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div></article>`)
+        .join('')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
+    },
     // 6. Pain
     {
       bg: 'navy',
@@ -307,27 +315,12 @@ function home() {
         </div>
       </div>`,
     },
-    // 7. What is in the kit
-    {
-      bg: 'cream',
-      html: `<div class="wrap">${heading(c.kit.title)}<p class="lead center">${esc(c.kit.intro)}</p><div class="kit">${c.kit.items
-        .map((b, i) => `<article class="piece"><span class="num">${i + 1}</span><div class="piece-ico">${icon(b.icon)}</div><h3>${esc(b.title)}</h3><p>${esc(b.text)}</p></article>`)
-        .join('')}</div></div>`,
-    },
     // 8. Buy button 1
     { bg: 'tint', cls: 'cta-band', html: ctaBand(c.cta.first, 'first', c.cta.first.title) },
     // 9. Print what you need
     {
       bg: 'cream2',
       html: `<div class="wrap narrow center"><div class="print-card"><div class="print-ico">${icon('printer', 34)}</div><h2>${esc(c.print.title)}</h2><p class="lead">${esc(c.print.text)}</p><ul class="chips">${c.print.points.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div></div><div class="wrap">${mealsStrip}</div>`,
-    },
-    // 10. A look inside
-    {
-      bg: 'cream',
-      id: 'look',
-      html: `<div class="wrap">${heading(c.look.title)}<p class="lead center">${esc(c.look.intro)}</p><div class="pages">${c.look.pages
-        .map((p) => `<figure><img src="${esc(p.src)}" alt="${esc(p.alt)}" width="800" height="1035" loading="lazy">${p.caption ? `<figcaption>${esc(p.caption)}</figcaption>` : ''}</figure>`)
-        .join('')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
     },
     // 11. How it works
     {
@@ -482,7 +475,7 @@ if (!checkoutSet) blockers.add('CHECKOUT_URL');
 if (/\[\[/.test(cfg.freeRecipe.url)) blockers.add('FREE_RECIPE_URL (where the free recipe button goes)');
 for (const [k, v] of Object.entries(cfg.pages)) if (v.draft) blockers.add(`Attorney review of the ${k} page`);
 if (/placeholder/i.test(cfg.images.kitMockup)) blockers.add('Kit mockup image (images.kitMockup is still a placeholder)');
-if (cfg.look.pages.some((p) => /placeholder/i.test(p.src))) blockers.add('Cover/preview images (look.pages are still placeholders)');
+if (cfg.inside.items.some((p) => /placeholder/i.test(p.src))) blockers.add('Cover images (inside.items are still placeholders)');
 if (!cfg.delivery) blockers.add('FAQ answer: how files are delivered (delivery)');
 if (cfg.guarantee.show && !cfg.guarantee.confirmedWithMerchant) blockers.add(`Confirm the ${cfg.guarantee.days}-day guarantee with the merchant of record (guarantee.confirmedWithMerchant)`);
 const optional = [];

@@ -7,8 +7,8 @@ Look: cream background, navy `#172B4D` + action blue `#2563EB`, hearts and short
 1. **Hook** (navy band, very first thing, above the logo): "Heard “prediabetes” and left with zero idea what to eat?" · B version: `/?v=b`
 2. **Logo + the deliverable** (kit mockup, badges, name, promise)
 3. **U.S. news card** (CDC data: 115.2 million adults; 31.3 million age 65+) + **GET A FREE RECIPE** button (`freeRecipe.url` / `FREE_RECIPE_URL`; flow to be structured later)
-4. **Pain** ("Sound familiar?" cards, "Now what do I eat?")
-5. What's in the kit (6 pieces) → **buy button 1** → Print what you need → A look inside → How it works → **buy button 2**
+4. **A look inside**: the 6 covers, each with a short synopsis (replaces the old "What's in the kit")
+5. **Pain** ("Sound familiar?" cards, "Now what do I eat?") → **buy button 1** → Print what you need → How it works → **buy button 2**
 6. Dietitian review / customer reviews / creator (hidden until real)
 7. Is this kit a good fit? (for / not for) → guarantee → FAQ → final offer → **buy button 3** → footer
 Pages: `/terms/`, `/privacy/`, `/disclaimer/`, `/contact/`, `/thank-you/` (Purchase event, not indexed).
