@@ -80,7 +80,7 @@
     if (unlocked) showCongrats(false);
     if (form) form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var ok = form.read.checked && form.querySelector('input[name="likely"]:checked') && form.querySelector('input[name="think"]:checked');
+      var ok = form.querySelector('input[name="likely"]:checked') && form.querySelector('input[name="think"]:checked');
       var err = document.getElementById('confirm-error');
       if (!ok) { if (err) err.hidden = false; return; }
       if (err) err.hidden = true;

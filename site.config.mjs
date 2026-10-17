@@ -119,7 +119,7 @@ export default {
   // Opening /free-recipe/ unlocks the coupon on that device (saved in the browser).
   freeRecipe: {
     button: 'GET A FREE RECIPE',
-    support: 'Read it, tell us what you think and unlock coupon {couponCode}: the kit drops from {listPrice} to {couponPrice}.',
+    support: 'Read it, tell us what you think and a special surprise discount is waiting for you.',
     url: env.FREE_RECIPE_URL || '/free-recipe/',
   },
   recipePage: {
@@ -169,14 +169,13 @@ export default {
     nutrition: '', // optional line (e.g. per-serving estimate). Leave empty until your dietitian has checked it.
     // After the recipe: a short confirmation. Answers stay on the device (nothing is sent or stored).
     confirm: {
-      title: 'Did you read it? Tell us what you think',
-      text: 'Answer two quick questions and we’ll unlock your coupon.',
-      readLabel: 'Yes, I read the recipe',
+      title: 'Tell us what you think',
+      text: 'Answer two quick questions and a surprise is waiting for you.',
       likelyTitle: 'How likely are you to make it?',
       likely: ['Very likely', 'Likely', 'Maybe', 'Not likely'],
       thinkTitle: 'What do you think of it?',
       think: ['Love it', 'Looks good', 'It’s okay'],
-      button: 'CONFIRM AND UNLOCK MY COUPON',
+      button: 'UNLOCK MY SURPRISE',
       note: 'Your answers stay on your device. We don’t collect them.',
     },
     // Shown after confirming: congratulations + the coupon
@@ -199,12 +198,12 @@ export default {
     stack: '6 pieces × {pieceValue} = {listPrice}',
     fullPriceLabel: 'Full price',
     lockedHeadline: 'Wait, there’s a better price.',
-    lockedText: 'Read your free recipe first, tell us what you think and unlock coupon {couponCode}: the kit drops to {couponPrice} instead of {listPrice}. You also get one more dish on your menu.',
+    lockedText: 'Read your free recipe first and tell us what you think. A special discount is waiting for you, and you get one more dish on your menu.',
     lockedLink: 'Get my free recipe',
     unlockedLabel: 'Coupon {couponCode} unlocked',
     modal: {
       title: 'Before you go: your free recipe is waiting',
-      text: 'Read the free recipe, tell us what you think and you unlock coupon {couponCode}. The kit drops from {listPrice} to {couponPrice}, and you get one more dish for your weekly menu.',
+      text: 'Read the free recipe and tell us what you think. A special discount is waiting for you, and you get one more dish for your weekly menu.',
       primary: 'Get my free recipe',
       secondary: 'No thanks, continue at {listPrice}',
       close: 'Close',
@@ -384,7 +383,7 @@ export default {
       { q: 'Do I need an air fryer?', a: 'No. No special equipment. There’s no air fryer or Instant Pot in any recipe.' },
       { q: 'Do I need special ingredients?', a: 'No. Everything is available at a regular grocery store.' },
       { q: 'Is this a subscription?', a: 'No. It’s a one-time purchase. Any applicable taxes will be shown at checkout.' },
-      { q: 'How does coupon {couponCode} work?', a: 'Read the free recipe and answer the two quick questions at the end. The coupon unlocks automatically on that device. At checkout the price goes from {listPrice} to {couponPrice}. If it doesn’t apply by itself, type {couponCode} into the coupon box.' },
+      { q: 'How do I get a discount?', a: 'Read the free recipe and answer the two quick questions at the end. Your discount unlocks automatically on that device, and you’ll see your code and your new price right there. If the code doesn’t apply by itself at checkout, just type it into the coupon box.' },
       { q: 'Who is this kit for?', a: 'It’s made for adults who’ve heard the word “prediabetes” and want a simple, printable plan for everyday meals, shopping and routines. It’s educational: it gives general information, doesn’t diagnose anything and doesn’t promise any health result.' },
       { q: 'Does this replace advice from my doctor or dietitian?', a: 'No. Use it as educational material and discuss dietary changes with your healthcare professional.' },
       { q: 'What if I take medication or have specific dietary needs?', a: 'Talk to your doctor or registered dietitian before changing your diet. Do not stop or adjust medication based on this kit.' },
@@ -425,7 +424,7 @@ export default {
         { h: '3. Digital products and license', p: ['Our products are digital PDF files delivered by download. When you buy, you get a personal, non-transferable license to use the product for yourself and your household. You may print it for your own use. You may not resell, share publicly, copy or redistribute it.'] },
         { h: '4. Payments', p: ['Payments are handled by our payment partner, which acts as the seller of record. Prices are shown in U.S. dollars. Taxes may apply and are handled at checkout.'] },
         { h: '5. Refunds', p: ['{refundText}'] },
-        { h: '6. Coupons and discounts', p: ['Coupon {couponCode} is unlocked by reading the free recipe and confirming it, and reduces the price of the kit from {listPrice} to {couponPrice}. We may change or end a promotion at any time. [[Confirm the coupon works at checkout.]]'] },
+        { h: '6. Coupons and discounts', p: ['A discount is unlocked by reading the free recipe and answering two short questions, and reduces the price of the kit from {listPrice} to {couponPrice}. We may change or end a promotion at any time. [[Confirm the coupon works at checkout.]]'] },
         { h: '7. No guarantees of results', p: ['We do not promise any particular result. Use of the products is at your own risk.'] },
         { h: '8. Intellectual property', p: ['All content on this site and in our products is owned by {legalName} or its licensors and is protected by copyright.'] },
         { h: '9. Limitation of liability', p: ['To the fullest extent permitted by law, we are not liable for indirect, incidental or consequential damages arising from your use of the site or products, and our total liability is limited to the amount you paid for the product. [[Lawyer to confirm wording and governing law/jurisdiction.]]'] },

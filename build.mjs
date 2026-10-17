@@ -498,10 +498,9 @@ function recipePage() {
           <div class="modal-ico">${icon('check', 30)}</div>
           <h2>${esc(cf.title)}</h2>${deco}
           <p>${esc(cf.text)}</p>
-          <label class="read"><input type="checkbox" name="read" required> <span>${esc(cf.readLabel)}</span></label>
           <fieldset class="choices"><legend>${esc(cf.likelyTitle)}</legend>${cf.likely.map((x, i) => `<label class="choice"><input type="radio" name="likely" value="${i}" required><span>${esc(x)}</span></label>`).join('')}</fieldset>
           <fieldset class="choices"><legend>${esc(cf.thinkTitle)}</legend>${cf.think.map((x, i) => `<label class="choice"><input type="radio" name="think" value="${i}" required><span>${esc(x)}</span></label>`).join('')}</fieldset>
-          <p class="form-error" id="confirm-error" hidden>Please check the box and pick an answer for each question.</p>
+          <p class="form-error" id="confirm-error" hidden>Please pick an answer for each question.</p>
           <button class="btn" type="submit">${esc(cf.button)}</button>
           <p class="cta-note">${HEART} ${esc(cf.note)}</p>
         </form>
