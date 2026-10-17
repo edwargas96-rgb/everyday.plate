@@ -4,7 +4,13 @@
   function track(name, params) { try { if (S.pixel && window.fbq) window.fbq('track', name, params); } catch (e) {} }
   var base = { content_name: S.contentName, value: S.value, currency: S.currency };
 
-  if (S.page === 'home') track('ViewContent', base);
+  // Headline A/B: ?v=b shows variant B. The variant is sent as a generic custom parameter.
+  var variant = 'a';
+  if (S.page === 'home') {
+    var h = document.querySelector('h1[data-b]');
+    if (h && new URLSearchParams(location.search).get('v') === 'b') { h.textContent = h.getAttribute('data-b'); variant = 'b'; }
+    track('ViewContent', { content_name: S.contentName, value: S.value, currency: S.currency, headline_variant: variant });
+  }
 
   if (S.page === 'thank-you') {
     var q = new URLSearchParams(location.search), v = parseFloat(q.get('value'));
