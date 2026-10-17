@@ -21,7 +21,7 @@ async function* walk(d) {
   }
 }
 let bad = 0;
-// Brand must always be written 'The Everyday Plate' (3 words) in visible text.
+// Brand must always be written 'The Everyday Plate' (one word) in visible text.
 const BRAND_WRONG = /\bEvery Day Plate\b/i;
 // 'prediabetes' may only appear in the FAQ, never in headlines or section titles or the page title.
 const PREDIABETES_OK_IN = /<details>[\s\S]*?<\/details>/g;
