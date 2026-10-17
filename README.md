@@ -8,7 +8,7 @@ Look: cream background, navy `#172B4D` + action blue `#2563EB`, hearts and short
 2. **Logo + the deliverable** (kit mockup, badges, name, promise)
 3. **U.S. news card** (CDC data: 115.2 million adults; 31.3 million age 65+) + **GET A FREE RECIPE** button (`freeRecipe.url` / `FREE_RECIPE_URL`; flow to be structured later)
 4. **A look inside**: endless auto-scrolling carousel of the 6 covers (same base as the Active Tu Ingles mind-map carousel): it moves by itself, swipe/drag works both ways, a touch holds it for a moment, a tap or the pause button stops it; off with reduced-motion
-5. **Pain** ("Sound familiar?" cards, "Now what do I eat?") → **buy button 1** → Print what you need → How it works → **buy button 2**
+5. **Pain** (shorter, with a dinner photo; "Sound familiar?" cards, "Now what do I eat?") → **buy button 1** → Print what you need → How it works → **The approach behind the kit** (plate method, carbs and fiber, small habits, care team; sources: ADA, NIDDK/DPP, CDC National DPP) → **buy button 2**
 6. Dietitian review / customer reviews / creator (hidden until real)
 7. Is this kit a good fit? (for / not for) → guarantee → FAQ → final offer → **buy button 3** → footer
 Pages: `/terms/`, `/privacy/`, `/disclaimer/`, `/contact/`, `/thank-you/` (Purchase event, not indexed).
@@ -40,4 +40,4 @@ Import this repo (framework preset: Other; `vercel.json` sets build and output).
 `PageView` + `ViewContent` (with a generic `headline_variant`) on load, `Lead` on the free recipe button, `InitiateCheckout` on any buy button, `Purchase` on `/thank-you/`. Params are generic (`content_name: "14-Day Printable Kit"`): never put a health term in them or in the domain/URL.
 
 ## Guardrails
-`npm run check` (also on every Vercel build) fails on: cure, reverse, treat, heal, A1C, guaranteed, reset, fix, solution, control, ebook, "get off medication", "diabetes-proof", "you have prediabetes", the old brand names, "The Everyday Plate" spelling, the hook must stay above the logo. The exact disclaimer sits by all three buy buttons and in the footer. No invented reviews, credentials or counts.
+`npm run check` (also on every Vercel build) fails on: cure, reverse, treat, heal, A1C, guaranteed, reset, fix, solution, control, ebook, "get off medication", "diabetes-proof", "you have prediabetes", the old brand names, "The Everyday Plate" spelling, the hook must stay above the logo. A short line ("Educational information only, not medical advice" + link) sits under every buy button; the full disclaimer is in the footer and on `/disclaimer/`. No invented reviews, credentials or counts.

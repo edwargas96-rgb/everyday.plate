@@ -75,6 +75,7 @@ const heading = (text, center = true) => `<h2${center ? ' class="center"' : ''}>
 
 // Discreet line icons, drawn in the brand blue via currentColor.
 const ICONS = {
+  plate: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.8"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   fridge: '<rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M6 10h12M9 6v1.5M9 13v3"/>',
   calendar: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
@@ -99,7 +100,7 @@ const cta = (button, support, where) => `
   <div class="cta-wrap">
     <a class="btn" href="${esc(checkoutHref)}" data-checkout data-where="${where}"><span>${esc(button)}</span></a>
     <p class="cta-note">${HEART} ${esc(support)}</p>
-    ${disclaimer()}
+    <p class="mini-disc">${esc(cfg.disclaimerShort)} <a href="/disclaimer/">Full disclaimer</a></p>
   </div>`;
 
 // What the buyer sees under a buy button: the full price, or the coupon price once it is unlocked.
@@ -328,6 +329,7 @@ function home() {
         <p class="eyebrow">${esc(c.meet.eyebrow)}</p>
         <h2 class="product">${esc(c.meet.name)}</h2>
         <p class="subtitle">${esc(c.meet.subtitle)}</p>
+        <p class="for-line">${esc(c.meet.forLine)}</p>
         <p class="promise">${esc(c.meet.promise)}</p>
         <ul class="chips">${c.meet.chips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
       </div>`,
@@ -366,12 +368,15 @@ function home() {
         <div class="pains">${c.pain.cards
           .map((p) => `<article class="pain-card"><div class="pain-ico">${icon(p.icon, 26)}</div><div><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div></article>`)
           .join('')}</div>
-        <div class="narrow center pain-story">
-          <p class="bigline">${esc(c.pain.bigLine)}</p>
-          <p class="lead-pain">${esc(c.pain.lead)}</p>
-          ${c.pain.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
-          ${c.pain.closing.map((p, i) => `<p${i === c.pain.closing.length - 1 ? ' class="strong"' : ''}>${esc(p)}</p>`).join('')}
-          <p class="hand">${HEART} ${esc(c.phrases.afterPain)} ${HEART}</p>
+        <div class="pain-split">
+          <figure class="pain-photo"><img src="${esc(c.pain.image.src)}" alt="${esc(c.pain.image.alt)}" width="${c.pain.image.size[0]}" height="${c.pain.image.size[1]}" loading="lazy" decoding="async"></figure>
+          <div class="pain-story">
+            <p class="bigline">${esc(c.pain.bigLine)}</p>
+            <p class="lead-pain">${esc(c.pain.lead)}</p>
+            ${c.pain.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
+            ${c.pain.closing.map((p, i) => `<p${i === c.pain.closing.length - 1 ? ' class="strong"' : ''}>${esc(p)}</p>`).join('')}
+            <p class="hand">${HEART} ${esc(c.phrases.afterPain)} ${HEART}</p>
+          </div>
         </div>
       </div>`,
     },
@@ -389,6 +394,18 @@ function home() {
       html: `${RAYS}<div class="wrap narrow"><h2 class="center">${esc(c.steps.title)}</h2>${deco}<ol class="steps">${c.steps.items
         .map((s) => `<li><div><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></div></li>`)
         .join('')}</ol><p class="note">${esc(c.steps.note)}</p></div>`,
+    },
+    // 11b. The approach behind the kit
+    {
+      bg: 'auto',
+      id: 'approach',
+      html: `<div class="wrap">${heading(c.approach.title)}<p class="lead center narrow-p">${esc(c.approach.intro)}</p>
+        <div class="approach">${c.approach.items
+          .map((p) => `<article class="ap-card"><div class="ap-ico">${icon(p.icon, 26)}</div><div><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div></article>`)
+          .join('')}</div>
+        <div class="sources"><h3>${esc(c.approach.sourcesTitle)}</h3><ul>${c.approach.sources
+          .map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener nofollow">${esc(s.name)}</a></li>`)
+          .join('')}</ul><p class="small">${esc(c.approach.note)}</p></div></div>`,
     },
     // 12. Buy button 2
     { bg: 'auto', cls: 'cta-band', html: ctaBand(c.cta.mid, 'mid', c.cta.mid.title) },
@@ -606,6 +623,7 @@ if (/\[\[/.test(cfg.freeRecipe.url)) blockers.add('FREE_RECIPE_URL (where the fr
 for (const [k, v] of Object.entries(cfg.pages)) if (v.draft) blockers.add(`Attorney review of the ${k} page`);
 if (/placeholder/i.test(cfg.images.kitMockup)) blockers.add('Kit mockup image (images.kitMockup is still a placeholder)');
 if (cfg.inside.items.some((p) => /placeholder/i.test(p.src))) blockers.add('Cover images (inside.items are still placeholders)');
+if (!cfg.approach.confirmed) blockers.add('Approach section: confirm it matches the final kit and have the dietitian review it (approach.confirmed)');
 if (!cfg.delivery) blockers.add('FAQ answer: how files are delivered (delivery)');
 if (cfg.guarantee.show && !cfg.guarantee.confirmedWithMerchant) blockers.add(`Confirm the ${cfg.guarantee.days}-day guarantee with the merchant of record (guarantee.confirmedWithMerchant)`);
 const optional = [];

@@ -63,10 +63,13 @@ export default {
   disclaimer:
     'Educational information only. Not medical advice. Talk to your doctor or a registered dietitian before changing your diet, especially if you take medication or have a medical condition.',
 
+  // Short line shown under every buy button. The full text lives in the footer and on /disclaimer/.
+  disclaimerShort: 'Educational information only, not medical advice.',
+
   seo: {
     title: 'The Everyday Plate | The 14-Day Printable Kit: Easy Meals, Grocery Lists & Daily Habits',
     description:
-      'A 14-day printable kit: fridge chart, meal plan, grocery lists, 30 recipe cards and a tracker. Print it or view it on your phone. Instant PDF download.',
+      'A 14-day printable meal-planning kit for adults who’ve heard the word prediabetes: fridge chart, meal plan, grocery lists, 30 recipe cards and a tracker. Instant PDF download.',
     ogImage: '/og.png',
   },
 
@@ -217,17 +220,11 @@ export default {
       { icon: 'search', title: 'I’m tired of Googling.', text: 'Ten websites, ten different answers.' },
       { icon: 'heart', title: 'I don’t want to give up everything I love.', text: 'You want real food, not a plan you’ll quit by Friday.' },
     ],
+    image: { src: '/images/pain-dinner.webp', alt: 'A skillet of sliced chicken and colorful bell peppers, ready for dinner', size: [1000, 625] },
     bigLine: 'Now what do I eat?',
-    lead: 'Another grocery trip. Another list of ingredients. And the same unanswered question when it’s time to make a meal.',
-    paragraphs: [
-      'You search for ideas. Save a few recipes. Read another article.',
-      'One says to avoid a food. Another says it belongs on your plate.',
-      'Meanwhile, dinner still needs to happen.',
-    ],
-    closing: [
-      'A folder full of saved recipes doesn’t tell you what to put in your cart this week.',
-      'You need a practical place to start.',
-    ],
+    lead: 'One website says avoid a food. Another says it belongs on your plate. Meanwhile, dinner still needs to happen.',
+    paragraphs: [],
+    closing: ['You need a practical place to start.'],
   },
 
   // ---------- Encouraging phrases (hearts bands) ----------
@@ -242,6 +239,7 @@ export default {
     eyebrow: 'Meet',
     name: 'The Everyday Plate',
     subtitle: 'The 14-Day Printable Kit: Easy Meals, Grocery Lists & Daily Habits',
+    forLine: 'A printable meal-planning kit for adults who’ve heard the word “prediabetes” and want a clear plan for everyday meals.',
     promise: 'Know exactly what to eat, buy and do every day, so you stop guessing.',
     paragraphs: [
       'Six printable pieces that bring your meals, shopping and everyday routines together on paper, where you can see them.',
@@ -320,10 +318,31 @@ export default {
     photoAlt: '',
   },
 
+  // ---------- The approach behind the kit (plain-language, public sources, no promises) ----------
+  // Confirm that this wording matches the final kit and have your dietitian review it, then set confirmed: true.
+  approach: {
+    confirmed: false,
+    title: 'The approach behind the kit',
+    intro: 'No gimmicks and no secret formula. The kit puts a few well-known, publicly available ideas on paper, so you don’t have to piece them together from ten different websites.',
+    items: [
+      { icon: 'plate', title: 'A simple, balanced plate', text: 'The meal plan and the recipes follow the plate idea the American Diabetes Association teaches: about half the plate non-starchy vegetables, a quarter protein, a quarter carbohydrate foods. No counting, weighing or measuring.' },
+      { icon: 'recipe', title: 'Carbs and fiber, in plain sight', text: 'Every recipe card shows carbs and fiber per serving, so you can see what’s on your plate. We keep it practical instead of asking you to memorize glycemic index tables.' },
+      { icon: 'heart', title: 'Small everyday habits', text: 'Eating well and moving regularly are the heart of the lifestyle approach studied in the NIH-led Diabetes Prevention Program, the research behind the CDC’s National DPP lifestyle change program. The tracker keeps your meals, a 10-minute walk after eating, and sleep in one place.' },
+      { icon: 'questions', title: 'Your care team stays in charge', text: 'The kit is a planning tool, not medical care. One page helps you bring good questions to your doctor or registered dietitian.' },
+    ],
+    sourcesTitle: 'Read the sources',
+    sources: [
+      { name: 'American Diabetes Association: the Diabetes Plate method', url: 'https://professional.diabetes.org/sites/dpro/files/2025-05/PE25-Plan-Your-Plate-FINAL-5-22-25.pdf' },
+      { name: 'NIDDK: Diabetes Prevention Program (DPP) research study', url: 'https://www.niddk.nih.gov/about-niddk/research-areas/diabetes/diabetes-prevention-program-dpp' },
+      { name: 'CDC: What is the National Diabetes Prevention Program?', url: 'https://www.cdc.gov/diabetes-prevention/programs/what-is-the-national-dpp.html' },
+    ],
+    note: 'The Everyday Plate is independent. It is not affiliated with or endorsed by the ADA, NIH or CDC, it is not the DPP or the National DPP, and it doesn’t promise any health result.',
+  },
+
   // ---------- 10. Who it fits ----------
   fit: {
     title: 'Is this kit a good fit?',
-    intro: 'The Everyday Plate is an educational meal-planning kit for adults who want practical meal ideas they can see at a glance.',
+    intro: 'The Everyday Plate is made for adults who’ve heard the word “prediabetes” from their doctor, or who were told their blood sugar is a little high, and want a clear, printable way to plan everyday meals. It is educational: it doesn’t diagnose anything and doesn’t promise any health result.',
     listIntro: 'It may suit you if you want:',
     items: [
       'A two-week starting point for organizing meals.',
@@ -366,7 +385,7 @@ export default {
       { q: 'Do I need special ingredients?', a: 'No. Everything is available at a regular grocery store.' },
       { q: 'Is this a subscription?', a: 'No. It’s a one-time purchase. Any applicable taxes will be shown at checkout.' },
       { q: 'How does coupon {couponCode} work?', a: 'Read the free recipe and answer the two quick questions at the end. The coupon unlocks automatically on that device. At checkout the price goes from {listPrice} to {couponPrice}. If it doesn’t apply by itself, type {couponCode} into the coupon box.' },
-      { q: 'Who is this kit for?', a: 'It’s an educational meal-planning resource for adults seeking practical meal ideas, including people exploring food choices in the context of prediabetes. It provides general information, not personalized guidance.' },
+      { q: 'Who is this kit for?', a: 'It’s made for adults who’ve heard the word “prediabetes” and want a simple, printable plan for everyday meals, shopping and routines. It’s educational: it gives general information, doesn’t diagnose anything and doesn’t promise any health result.' },
       { q: 'Does this replace advice from my doctor or dietitian?', a: 'No. Use it as educational material and discuss dietary changes with your healthcare professional.' },
       { q: 'What if I take medication or have specific dietary needs?', a: 'Talk to your doctor or registered dietitian before changing your diet. Do not stop or adjust medication based on this kit.' },
       { q: 'How will I receive the files?', a: '{delivery}' },

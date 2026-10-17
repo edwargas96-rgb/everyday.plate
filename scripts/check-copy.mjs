@@ -35,6 +35,12 @@ for await (const f of walk(dist)) {
     const hook = html.indexOf('class="band band-navy hook"'), logoAt = html.indexOf('logo-xl');
     if (hook < 0 || logoAt < 0 || hook > logoAt) { bad++; console.error('Hook is not above the logo on the home page'); }
   }
+  // Buy buttons carry the short disclaimer; the full text lives in the footer and on /disclaimer/.
+  if (f.endsWith('index.html') && /data-checkout/.test(html)) {
+    const blocks = html.split('<a class="btn"').slice(1).filter((x) => x.includes('data-checkout'));
+    const missing = blocks.filter((x) => !/not medical advice/i.test(x.slice(0, 900)));
+    if (missing.length) { bad++; console.error(`${missing.length} buy button(s) without the short disclaimer in ${path.relative(dist, f)}`); }
+  }
   // tracking payload must not mention a health condition
   const data = (html.match(/window\.__SITE__=(\{.*?\});/) || [])[1] || '';
   if (/diabet|blood|sugar|a1c/i.test(data)) { bad++; console.error(`Tracking config mentions a health term in ${path.relative(dist, f)}`); }
