@@ -195,17 +195,19 @@ export default {
 
   // ---------- Price explanation (shown under the pieces and in the buy boxes) ----------
   pricing: {
-    stack: '6 pieces × {pieceValue} = {listPrice}',
+    stack: '',
     fullPriceLabel: 'Full price',
-    lockedHeadline: 'Wait, there’s a better price.',
-    lockedText: 'Read your free recipe first and tell us what you think. A special discount is waiting for you, and you get one more dish on your menu.',
+    lockedLabel: 'Your price',
+    lockedBadge: 'Locked',
+    lockedHeadline: 'Your price is locked.',
+    lockedText: 'Read your free recipe and tell us what you think to unlock it. You also get one more dish on your menu.',
     lockedLink: 'Get my free recipe',
     unlockedLabel: 'Coupon {couponCode} unlocked',
     modal: {
       title: 'Before you go: your free recipe is waiting',
       text: 'Read the free recipe and tell us what you think. A special discount is waiting for you, and you get one more dish for your weekly menu.',
       primary: 'Get my free recipe',
-      secondary: 'No thanks, continue at {listPrice}',
+      secondary: 'No thanks, continue to checkout',
       close: 'Close',
     },
   },
@@ -262,8 +264,8 @@ export default {
 
   // ---------- Buttons (3 on the page) ----------
   cta: {
-    first: { title: 'Ready to stop guessing?', button: 'GET THE EVERYDAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
-    mid: { title: 'Print it. Stick it up. Follow along.', button: 'GET THE EVERYDAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
+    first: { title: 'Ready to stop guessing?', button: 'GET THE EVERYDAY PLATE', support: 'One-time purchase · Instant PDF download' },
+    mid: { title: 'Print it. Stick it up. Follow along.', button: 'GET THE EVERYDAY PLATE', support: 'One-time purchase · Instant PDF download' },
     final: {
       title: 'Give your next grocery trip a clear plan.',
       lines: ['Six printable pieces.', 'Thirty recipe cards.', 'Fourteen days of meals, ready to stick on the fridge.'],

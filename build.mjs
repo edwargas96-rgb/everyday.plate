@@ -86,6 +86,7 @@ const ICONS = {
   search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
   question: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.2.9-1.2 1.7"/><path d="M12 17v.1"/>',
   heart: '<path d="M12 20.5s-7.5-4.8-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.4-7.5 10.2-7.5 10.2z"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
   gift: '<rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12"/><path d="M12 8c-2.5 0-4-1-4-2.5S9.5 3 12 8zM12 8c2.5 0 4-1 4-2.5S14.5 3 12 8z"/>',
   printer: '<path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/>',
 };
@@ -107,9 +108,9 @@ const cta = (button, support, where) => `
 const priceBox = ({ stack = false } = {}) => {
   const p = cfg.pricing;
   return `<div class="pricebox">
-    ${stack ? `<p class="stack">${esc(p.stack)}</p>` : ''}
+    ${stack && p.stack ? `<p class="stack">${esc(p.stack)}</p>` : ''}
     <div class="only-locked">
-      <p class="pb-row"><span class="pb-label">${esc(p.fullPriceLabel)}</span> <span class="pb-big">${esc(cfg.price.display)}</span></p>
+      <p class="pb-row"><span class="pb-label">${esc(p.lockedLabel)}</span> <span class="pb-big is-locked">${esc(cfg.price.coupon.display)}</span> <span class="lock-badge">${icon('lock', 14)} ${esc(p.lockedBadge)}</span></p>
       <p class="nudge"><strong>${esc(p.lockedHeadline)}</strong> ${esc(p.lockedText)} <a href="${esc(freeHref)}" data-free>${esc(p.lockedLink)}</a></p>
     </div>
     <div class="only-unlocked">
@@ -334,7 +335,24 @@ function home() {
         <ul class="chips">${c.meet.chips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
       </div>`,
     },
-    // 4. News + 5. free recipe button
+    // 4b. A look inside: the six covers with a short synopsis of each (replaces the old "What's in the kit")
+    {
+      bg: 'cream',
+      id: 'look',
+      html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p>${carousel(c.inside.items)}<div class="deal">${priceBox({ stack: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
+    },
+    // free recipe button (right after the look inside)
+    {
+      bg: 'tint',
+      cls: 'free-band',
+      html: `<div class="wrap narrow center">
+        <div class="free">
+          <a class="btn btn-ghost" href="${esc(freeHref)}" data-free>${esc(c.freeRecipe.button)}</a>
+          <p class="cta-note">${HEART} ${esc(c.freeRecipe.support)}</p>
+        </div>
+      </div>`,
+    },
+    // News
     {
       bg: 'tint',
       html: `<div class="wrap narrow center">
@@ -347,17 +365,7 @@ function home() {
           <p class="news-note">${esc(c.news.note)}</p>
           <p class="cite"><a href="${esc(c.news.citeUrl)}" target="_blank" rel="noopener nofollow">${esc(c.news.cite)}</a></p>
         </article>
-        <div class="free">
-          <a class="btn btn-ghost" href="${esc(freeHref)}" data-free>${esc(c.freeRecipe.button)}</a>
-          <p class="cta-note">${HEART} ${esc(c.freeRecipe.support)}</p>
-        </div>
       </div>`,
-    },
-    // 4b. A look inside: the six covers with a short synopsis of each (replaces the old "What's in the kit")
-    {
-      bg: 'cream',
-      id: 'look',
-      html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p>${carousel(c.inside.items)}<div class="deal">${priceBox({ stack: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
     },
     // 6. Pain
     {

@@ -200,6 +200,8 @@ html.unlocked .only-unlocked{display:block}
 .pb-big{font-family:var(--serif);font-size:2.6rem;line-height:1.05;color:var(--navy)}
 .pb-row s{font-family:var(--serif);font-size:1.5rem;color:var(--muted)}
 html.unlocked .pb-big{color:var(--blue)}
+.pb-big.is-locked{color:var(--muted,#6b7a90);opacity:.85}
+.lock-badge{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--tint);border:1px dashed var(--blue);color:var(--navy);vertical-align:middle}
 .nudge{margin:.6em 0 0;padding:12px 14px;background:var(--tint);border:1px dashed var(--blue);border-radius:var(--r);font-size:.95rem;color:var(--navy);text-align:left}
 .nudge a{font-weight:700;white-space:nowrap}
 .applied{margin:0;display:inline-flex;gap:6px;align-items:center;background:var(--navy);color:#fff;border-radius:99px;padding:5px 14px;font-weight:700;font-size:.9rem}
