@@ -260,7 +260,7 @@ function home() {
         <a class="logo-link" href="/" aria-label="${esc(c.site.brand)}">${logo('logo logo-xl')}</a>
         <div class="stage">
           <span class="badge b1">${HEART} PDF · US Letter</span>
-          <img class="mockup" src="${esc(c.images.kitMockup)}" alt="${esc(c.images.kitMockupAlt)}" width="960" height="720" fetchpriority="high">
+          <img class="mockup" src="${esc(c.images.kitMockup)}" alt="${esc(c.images.kitMockupAlt)}" width="${c.images.kitMockupSize[0]}" height="${c.images.kitMockupSize[1]}" fetchpriority="high">
           <span class="badge b2">${HEART} Print at home</span>
         </div>
         <p class="eyebrow">${esc(c.meet.eyebrow)}</p>
@@ -481,8 +481,8 @@ for (const [, html] of pages) for (const m of html.matchAll(/<mark class="ph"[^>
 if (!checkoutSet) blockers.add('CHECKOUT_URL');
 if (/\[\[/.test(cfg.freeRecipe.url)) blockers.add('FREE_RECIPE_URL (where the free recipe button goes)');
 for (const [k, v] of Object.entries(cfg.pages)) if (v.draft) blockers.add(`Attorney review of the ${k} page`);
-if (/placeholder/i.test(cfg.images.kitMockup)) blockers.add('Real kit mockup photo (images.kitMockup is still a placeholder)');
-if (cfg.look.pages.some((p) => /placeholder/i.test(p.src))) blockers.add('Real previews of the Fridge Chart and a Recipe Card (look.pages are still placeholders)');
+if (/placeholder/i.test(cfg.images.kitMockup)) blockers.add('Kit mockup image (images.kitMockup is still a placeholder)');
+if (cfg.look.pages.some((p) => /placeholder/i.test(p.src))) blockers.add('Cover/preview images (look.pages are still placeholders)');
 if (!cfg.delivery) blockers.add('FAQ answer: how files are delivered (delivery)');
 if (cfg.guarantee.show && !cfg.guarantee.confirmedWithMerchant) blockers.add(`Confirm the ${cfg.guarantee.days}-day guarantee with the merchant of record (guarantee.confirmedWithMerchant)`);
 const optional = [];

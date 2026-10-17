@@ -63,9 +63,9 @@ export default {
 
   // ---------- Images (files go in static/, paths start with "/") ----------
   images: {
-    // Printed kit on the kitchen table + chart on the fridge. Swap the placeholder
-    // for your real photo. No generated people.
-    kitMockup: '/images/placeholder-kit-mockup.svg',
+    // The kit on the kitchen table (illustrative image). Swap it for a real photo whenever you have one.
+    kitMockup: '/images/kit-mockup.webp',
+    kitMockupSize: [1536, 1024], // width, height of the file above
     kitMockupAlt: 'The printed kit on a kitchen table, with the fridge chart on the refrigerator',
     // Optional appetizing everyday-meal photos (3-photo strip). Empty = hidden.
     meals: [
@@ -189,10 +189,11 @@ export default {
   // ---------- 5. A look inside (2 previews) ----------
   look: {
     title: 'A look inside',
-    intro: 'Here are two of the pieces.',
+    intro: 'Three of the six pieces.',
     pages: [
-      { src: '/images/placeholder-fridge-chart.svg', alt: 'The Fridge Chart', caption: 'The Fridge Chart' },
-      { src: '/images/placeholder-recipe-card.svg', alt: 'A recipe card', caption: 'A Recipe Card' },
+      { src: '/images/cover-fridge-chart.webp', alt: 'Cover of the Fridge Chart, the Everyday Food Guide', caption: 'Fridge Chart' },
+      { src: '/images/cover-meal-plan.webp', alt: 'Cover of the 14-Day Meal Plan', caption: '14-Day Meal Plan' },
+      { src: '/images/cover-grocery-lists.webp', alt: 'Cover of the Weekly Grocery Lists, Week 1 and Week 2', caption: 'Weekly Grocery Lists' },
     ],
   },
 

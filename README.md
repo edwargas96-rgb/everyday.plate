@@ -24,10 +24,8 @@ npm run launch-check  # fails while any launch blocker is open
 **Empty = hidden on the live page**: `[REAL REVIEW]` customer quotes, `[RD NAME, CREDENTIALS]` dietitian review, creator, delivery answer, food photos.
 
 ## Images (files in `static/`, paths start with `/`)
-Placeholders to replace (they are clearly labeled and count as launch blockers):
-- `images.kitMockup`: printed kit on the kitchen table + chart on the fridge (`/images/placeholder-kit-mockup.svg`)
-- `look.pages`: Fridge Chart and one Recipe Card previews (`/images/placeholder-fridge-chart.svg`, `/images/placeholder-recipe-card.svg`)
-- Optional: `images.hero`, `images.meals` (everyday-meal photos), `static/og.png` (1200×630 share image)
+In use now: `kit-mockup.webp` (the kit on the kitchen table) and three covers in `static/images/` (Fridge Chart, 14-Day Meal Plan, Weekly Grocery Lists). Swap them in `images.kitMockup` and `look.pages`. Keep the pictures faithful to the real product.
+Optional: `images.meals` (everyday-meal photo strip) and `static/og.png` (1200×630 share image).
 
 ## Deploy on Vercel
 Import this repo (framework preset: Other; `vercel.json` sets build and output). Optional environment variables: `CHECKOUT_URL`, `FREE_RECIPE_URL`, `META_PIXEL_ID`, `SITE_URL`, `SUPPORT_EMAIL`. Redeploy after changing them. Checkout's post-purchase redirect: `https://yourdomain.com/thank-you/`.
