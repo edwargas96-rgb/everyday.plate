@@ -351,8 +351,6 @@ function home() {
             <p class="lead-c">${esc(c.tear.reveal.text)}</p>
             <div class="code-box"><span class="code-label">${esc(c.tear.reveal.codeLabel)}</span><strong class="code">${esc(cfg.price.coupon.code)}</strong><button type="button" class="copy-btn" data-copy="${esc(cfg.price.coupon.code)}" data-copied="${esc(c.tear.reveal.copied)}">${esc(c.tear.reveal.copy)}</button></div>
             <p>${esc(c.tear.reveal.active)}</p>
-            <p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span></p>
-            ${cta(c.tear.reveal.cta, c.tear.reveal.support, 'tear')}
             <p class="back"><a href="#look">${esc(c.tear.reveal.link)}</a></p>
           </div>
           <a class="tear-skip" href="#look">${esc(c.tear.skip)}</a>
