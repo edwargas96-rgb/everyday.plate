@@ -64,6 +64,9 @@ const ICONS = {
   recipe: '<rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
   tracker: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 11l1.5 1.5 3-3M8.5 17l1.5 1.5 3-3"/>',
   questions: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.6 9.4a2.4 2.4 0 1 1 3.4 2.2c-.6.3-1 .8-1 1.4"/><path d="M12 16.2v.1"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+  question: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.2.9-1.2 1.7"/><path d="M12 17v.1"/>',
+  heart: '<path d="M12 20.5s-7.5-4.8-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.4-7.5 10.2-7.5 10.2z"/>',
   printer: '<path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/>',
 };
 const icon = (name, size = 28) =>
@@ -155,183 +158,233 @@ const footer = () => `
 </footer>`;
 
 // ---------- home page ----------
+const BG = { navy: '#172B4D', cream: '#FCF7EC', cream2: '#F6EDDA', tint: '#EFF4FF' };
+const wave = (fill) =>
+  `<svg class="wave" viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22 Q50 2 100 18 T200 18 T300 18 T400 14 V40 H0Z" fill="${fill}"/></svg>`;
+
+// Sections get a background ('auto' alternates cream/cream2 so neighbors never match);
+// every section ends with a wave painted in the NEXT section's color.
+function assemble(list, lastNext) {
+  const secs = list.filter(Boolean);
+  secs.forEach((s, i) => {
+    if (s.bg === 'auto') {
+      const prev = i ? secs[i - 1].bg : null;
+      s.bg = prev === 'cream' ? 'cream2' : 'cream';
+    }
+  });
+  return secs
+    .map((s, i) => {
+      const nextBg = i + 1 < secs.length ? secs[i + 1].bg : lastNext;
+      return `<section class="band band-${s.bg}${s.cls ? ' ' + s.cls : ''}"${s.id ? ` id="${s.id}"` : ''}>${s.html}${nextBg ? wave(BG[nextBg]) : ''}</section>`;
+    })
+    .join('\n');
+}
+const hl = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<em>$1</em>');
+
+const RAYS = `<svg class="rays" viewBox="0 0 400 400" aria-hidden="true"><g stroke="#93B4F8" stroke-width="3" stroke-linecap="round" opacity=".5">${Array.from({ length: 16 }, (_, i) => {
+  const a = (i * Math.PI) / 8;
+  return `<line x1="${(200 + Math.cos(a) * 90).toFixed(1)}" y1="${(200 + Math.sin(a) * 90).toFixed(1)}" x2="${(200 + Math.cos(a) * 190).toFixed(1)}" y2="${(200 + Math.sin(a) * 190).toFixed(1)}"/>`;
+}).join('')}</g></svg>`;
+const ALERT = '<svg class="alert" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.4v.1"/></svg>';
+const SHIELD = '<svg class="shield" viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5L16 9.5"/></svg>';
+const NEWS = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v9a2 2 0 0 1-2 2"/><path d="M7.5 9h6M7.5 12.5h6M7.5 16h3"/></svg>';
+
 function home() {
   const c = cfg;
-  const heroPhoto = c.images.hero.src
-    ? `<img class="photo" src="${esc(c.images.hero.src)}" alt="${esc(c.images.hero.alt)}" width="800" height="1000" fetchpriority="high">`
-    : slot('appetizing everyday-meal photo (images.hero)');
+  const freeSet = !/\[\[/.test(c.freeRecipe.url);
+  const freeHref = freeSet ? c.freeRecipe.url : '#free-recipe';
+
+  const hookVariant = (v, tag) => {
+    const h = c.hook[v];
+    const title = tag === 'h1' ? `<h1>${hl(h.line)}</h1>` : `<div class="h1" role="heading" aria-level="1">${hl(h.line)}</div>`;
+    return `<div class="hook-copy" data-v="${v}"${v === 'b' ? ' hidden' : ''}>
+      <p class="kicker">${ALERT}<span>${esc(h.kicker)}</span></p>
+      ${title}
+      <p class="hook-sub">${esc(h.sub)}</p>
+    </div>`;
+  };
 
   const mealsStrip = c.images.meals.length
     ? `<div class="strip">${c.images.meals.map((m) => `<img src="${esc(m.src)}" alt="${esc(m.alt)}" width="600" height="450" loading="lazy">`).join('')}</div>`
     : slot('everyday-meal photos (images.meals)');
 
+  const ctaBand = (c2, where, title) => `<div class="wrap narrow center"><div class="cta-card"><h2>${esc(title)}</h2>${deco}${cta(c2.button, c2.support, where)}</div></div>`;
+
   const testimonials = c.testimonials.items.length
-    ? `<section class="section"><div class="wrap narrow">
-        ${heading(c.testimonials.title)}
-        ${c.testimonials.items
+    ? {
+        bg: 'auto',
+        html: `<div class="wrap narrow">${heading(c.testimonials.title)}${c.testimonials.items
           .map((q) => `<figure class="quote"><blockquote><p>${esc(q.quote)}</p></blockquote><figcaption>${esc(q.name)}${q.disclosure ? `<span>${esc(q.disclosure)}</span>` : ''}</figcaption></figure>`)
-          .join('')}</div></section>`
+          .join('')}</div>`,
+      }
     : draft
-      ? `<section class="section"><div class="wrap narrow">${slot('[REAL REVIEW]: verified customer quote(s) (testimonials.items)')}</div></section>`
-      : '';
+      ? { bg: 'auto', html: `<div class="wrap narrow">${slot('[REAL REVIEW]: verified customer quote(s) (testimonials.items)')}</div>` }
+      : null;
 
   const creator = c.creator.paragraphs.length
-    ? `<section class="section"><div class="wrap narrow"><div class="person">
-        ${c.creator.photo ? `<img class="avatar" src="${esc(c.creator.photo)}" alt="${esc(c.creator.photoAlt)}" width="120" height="120" loading="lazy">` : ''}
-        <div><h2>${esc(c.creator.title)}</h2>${c.creator.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}</div></div></div></section>`
+    ? {
+        bg: 'auto',
+        html: `<div class="wrap narrow"><div class="person">${c.creator.photo ? `<img class="avatar" src="${esc(c.creator.photo)}" alt="${esc(c.creator.photoAlt)}" width="120" height="120" loading="lazy">` : ''}<div><h2>${esc(c.creator.title)}</h2>${c.creator.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}</div></div></div>`,
+      }
     : draft
-      ? `<section class="section"><div class="wrap narrow">${slot('who created the kit, factual (creator.paragraphs)')}</div></section>`
-      : '';
+      ? { bg: 'auto', html: `<div class="wrap narrow">${slot('who created the kit, factual (creator.paragraphs)')}</div>` }
+      : null;
 
   const r = c.review;
   const review = r.reviewerName && r.credential && r.text
-    ? `<section class="section"><div class="wrap narrow"><div class="person trust">
-        ${r.photo ? `<img class="avatar" src="${esc(r.photo)}" alt="${esc(r.reviewerName)}" width="120" height="120" loading="lazy">` : `<div class="seal" aria-hidden="true">RD</div>`}
-        <div><h2>${esc(r.title)}</h2><p><strong>${esc(r.reviewerName)}</strong>, ${esc(r.credential)}</p><p>${esc(r.text)}</p></div></div></div></section>`
+    ? {
+        bg: 'auto',
+        html: `<div class="wrap narrow"><div class="person trust">${r.photo ? `<img class="avatar" src="${esc(r.photo)}" alt="${esc(r.reviewerName)}" width="120" height="120" loading="lazy">` : '<div class="seal" aria-hidden="true">RD</div>'}<div><h2>${esc(r.title)}</h2><p><strong>${esc(r.reviewerName)}</strong>, ${esc(r.credential)}</p><p>${esc(r.text)}</p></div></div></div>`,
+      }
     : draft
-      ? `<section class="section"><div class="wrap narrow">${slot('Reviewed by a Registered Dietitian: [RD NAME, CREDENTIALS] (review.*), only once the review is real and finished')}</div></section>`
-      : '';
-
-  const guarantee = c.guarantee.show
-    ? `<section class="section"><div class="wrap narrow"><div class="guarantee">
-        <div class="g-badge" aria-hidden="true"><span>${esc(c.guarantee.days)}</span>days</div>
-        <div><h2>${esc(c.guarantee.title)}</h2><p>${esc(c.guarantee.text)}</p></div></div></div></section>`
-    : '';
+      ? { bg: 'auto', html: `<div class="wrap narrow">${slot('Reviewed by a Registered Dietitian: [RD NAME, CREDENTIALS] (review.*), only once the review is real and finished')}</div>` }
+      : null;
 
   const faqItems = c.faq.items
     .filter((f) => f.a.trim() || draft)
     .map((f) => (f.a.trim() ? `<details><summary>${esc(f.q)}</summary><p>${t(f.a)}</p></details>` : `<div class="faq-slot">${slot(`answer for “${f.q}”`)}</div>`));
 
-  const body = `
-${header()}
-<main id="main">
-
-<!-- Pain -->
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div class="hero-copy">
-      <h1 data-a="${esc(c.headline.a)}" data-b="${esc(c.headline.b)}">${esc(c.headline.a)}</h1>
-      <p class="lead-pain">${esc(c.pain.lead)}</p>
-      ${c.pain.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
-      <p class="list-intro">${esc(c.pain.listIntro)}</p>
-      <ul class="questions">${c.pain.list.map((q) => `<li>${HEART}<span>${esc(q)}</span></li>`).join('')}</ul>
-      ${c.pain.closing.map((p, i) => `<p${i === c.pain.closing.length - 1 ? ' class="strong"' : ''}>${esc(p)}</p>`).join('')}
-    </div>
-    <div class="hero-photo">${heroPhoto}</div>
-  </div>
-</section>
-${phrase(c.phrases.afterPain)}
-
-<!-- Product name, promise, kit mockup -->
-<section class="section meet">
-  <div class="wrap center">
-    <p class="eyebrow">${esc(c.meet.eyebrow)}</p>
-    <h2 class="product">${esc(c.meet.name)}</h2>
-    <p class="subtitle">${esc(c.meet.subtitle)}</p>
-    <p class="promise">${esc(c.meet.promise)}</p>
-    ${c.meet.paragraphs.map((p) => `<p class="meet-p">${esc(p)}</p>`).join('')}
-    <ul class="chips">${c.meet.chips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-    <img class="mockup" src="${esc(c.images.kitMockup)}" alt="${esc(c.images.kitMockupAlt)}" width="960" height="720" fetchpriority="high">
-  </div>
-</section>
-
-<!-- What is in the kit -->
-<section class="section">
-  <div class="wrap">
-    ${heading(c.kit.title)}
-    <p class="lead center">${esc(c.kit.intro)}</p>
-    <div class="kit">
-      ${c.kit.items
+  const sections = [
+    // 1. HOOK, before everything else
+    {
+      bg: 'navy',
+      cls: 'hook',
+      html: `${RAYS}<div class="wrap center hook-wrap">${hookVariant('a', 'h1')}${hookVariant('b', 'div')}<a class="down" href="#showcase" aria-label="Keep reading"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a></div>`,
+    },
+    // 2. LOGO + 3. the deliverable
+    {
+      bg: 'cream',
+      cls: 'showcase',
+      id: 'showcase',
+      html: `<div class="wrap center">
+        <a class="logo-link" href="/" aria-label="${esc(c.site.brand)}">${logo('logo logo-xl')}</a>
+        <div class="stage">
+          <span class="badge b1">${HEART} PDF · US Letter</span>
+          <img class="mockup" src="${esc(c.images.kitMockup)}" alt="${esc(c.images.kitMockupAlt)}" width="960" height="720" fetchpriority="high">
+          <span class="badge b2">${HEART} Print at home</span>
+        </div>
+        <p class="eyebrow">${esc(c.meet.eyebrow)}</p>
+        <h2 class="product">${esc(c.meet.name)}</h2>
+        <p class="subtitle">${esc(c.meet.subtitle)}</p>
+        <p class="promise">${esc(c.meet.promise)}</p>
+        <ul class="chips">${c.meet.chips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+      </div>`,
+    },
+    // 4. News + 5. free recipe button
+    {
+      bg: 'tint',
+      html: `<div class="wrap narrow center">
+        <article class="news">
+          <header class="news-top"><span class="news-label">${NEWS} ${esc(c.news.label)}</span><span class="news-src">${esc(c.news.source)}</span></header>
+          <h2>${esc(c.news.headline)}</h2>
+          <p class="big-num">${esc(c.news.bigNumber)}</p>
+          <p class="big-text">${esc(c.news.bigText)}</p>
+          <p class="second"><strong>${esc(c.news.secondNumber)}</strong> ${esc(c.news.secondText)}</p>
+          <p class="news-note">${esc(c.news.note)}</p>
+          <p class="cite"><a href="${esc(c.news.citeUrl)}" target="_blank" rel="noopener nofollow">${esc(c.news.cite)}</a></p>
+        </article>
+        <div class="free">
+          <a class="btn btn-ghost" href="${esc(freeHref)}" data-free>${esc(c.freeRecipe.button)}</a>
+          <p class="cta-note">${HEART} ${esc(c.freeRecipe.support)}</p>
+        </div>
+      </div>`,
+    },
+    // 6. Pain
+    {
+      bg: 'navy',
+      cls: 'pain',
+      html: `${RAYS}<div class="wrap">
+        <h2 class="center">${esc(c.pain.title)}</h2>
+        <div class="pains">${c.pain.cards
+          .map((p) => `<article class="pain-card"><div class="pain-ico">${icon(p.icon, 26)}</div><div><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div></article>`)
+          .join('')}</div>
+        <div class="narrow center pain-story">
+          <p class="bigline">${esc(c.pain.bigLine)}</p>
+          <p class="lead-pain">${esc(c.pain.lead)}</p>
+          ${c.pain.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
+          ${c.pain.closing.map((p, i) => `<p${i === c.pain.closing.length - 1 ? ' class="strong"' : ''}>${esc(p)}</p>`).join('')}
+          <p class="hand">${HEART} ${esc(c.phrases.afterPain)} ${HEART}</p>
+        </div>
+      </div>`,
+    },
+    // 7. What is in the kit
+    {
+      bg: 'cream',
+      html: `<div class="wrap">${heading(c.kit.title)}<p class="lead center">${esc(c.kit.intro)}</p><div class="kit">${c.kit.items
         .map((b, i) => `<article class="piece"><span class="num">${i + 1}</span><div class="piece-ico">${icon(b.icon)}</div><h3>${esc(b.title)}</h3><p>${esc(b.text)}</p></article>`)
-        .join('')}
-    </div>
-  </div>
-</section>
+        .join('')}</div></div>`,
+    },
+    // 8. Buy button 1
+    { bg: 'tint', cls: 'cta-band', html: ctaBand(c.cta.first, 'first', c.cta.first.title) },
+    // 9. Print what you need
+    {
+      bg: 'cream2',
+      html: `<div class="wrap narrow center"><div class="print-card"><div class="print-ico">${icon('printer', 34)}</div><h2>${esc(c.print.title)}</h2><p class="lead">${esc(c.print.text)}</p><ul class="chips">${c.print.points.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div></div><div class="wrap">${mealsStrip}</div>`,
+    },
+    // 10. A look inside
+    {
+      bg: 'cream',
+      id: 'look',
+      html: `<div class="wrap">${heading(c.look.title)}<p class="lead center">${esc(c.look.intro)}</p><div class="pages">${c.look.pages
+        .map((p) => `<figure><img src="${esc(p.src)}" alt="${esc(p.alt)}" width="800" height="1035" loading="lazy">${p.caption ? `<figcaption>${esc(p.caption)}</figcaption>` : ''}</figure>`)
+        .join('')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
+    },
+    // 11. How it works
+    {
+      bg: 'navy',
+      cls: 'steps-band',
+      html: `${RAYS}<div class="wrap narrow"><h2 class="center">${esc(c.steps.title)}</h2>${deco}<ol class="steps">${c.steps.items
+        .map((s) => `<li><div><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></div></li>`)
+        .join('')}</ol><p class="note">${esc(c.steps.note)}</p></div>`,
+    },
+    // 12. Buy button 2
+    { bg: 'auto', cls: 'cta-band', html: ctaBand(c.cta.mid, 'mid', c.cta.mid.title) },
+    // 13. Trust (hidden until real)
+    review,
+    testimonials,
+    creator,
+    // 14. Fit
+    {
+      bg: 'auto',
+      html: `<div class="wrap"><h2 class="center">${esc(c.fit.title)}</h2>${deco}<p class="lead center narrow-p">${esc(c.fit.intro)}</p>
+        <div class="two">
+          <div class="panel yes"><span class="p-ico">${check}</span><h3>${esc(c.fit.listIntro)}</h3><ul>${c.fit.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>
+          <div class="panel no"><span class="p-ico x" aria-hidden="true">×</span><h3>${esc(c.fit.notTitle)}</h3><ul>${c.fit.notItems.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>
+        </div><p class="note narrow-p">${esc(c.fit.note)}</p></div>`,
+    },
+    // 15. Guarantee
+    c.guarantee.show
+      ? {
+          bg: 'navy',
+          cls: 'guarantee-band',
+          html: `<div class="wrap narrow center">${SHIELD}<h2>${esc(c.guarantee.title)}</h2><p>${esc(c.guarantee.text)}</p></div>`,
+        }
+      : null,
+    // 16. FAQ
+    { bg: 'cream', html: `<div class="wrap narrow">${heading(c.faq.title)}<div class="faq">${faqItems.join('')}</div></div>` },
+    // 17. Free-recipe placeholder (only while the sign-up is not set up) 
+    !freeSet
+      ? { bg: 'cream2', id: 'free-recipe', html: `<div class="wrap narrow center"><p class="ph-box"><mark class="ph">FREE_RECIPE_URL not set. The “${esc(c.freeRecipe.button)}” button has nowhere to go yet.</mark></p></div>` }
+      : null,
+    // 18. Final offer + buy button 3
+    {
+      bg: 'tint',
+      id: 'buy',
+      cls: 'final',
+      html: `<div class="wrap narrow center"><div class="cta-card">
+        <p class="hand">${HEART} ${esc(c.phrases.beforeFinal)} ${HEART}</p>
+        <h2>${esc(c.cta.final.title)}</h2>${deco}
+        <p class="final-lines">${c.cta.final.lines.map((l) => `<span>${esc(l)}</span>`).join('')}</p>
+        <p class="price-line">${esc(c.cta.final.priceLine)}</p>
+        ${cta(c.cta.final.button, c.cta.final.support, 'final')}
+        ${checkoutSet ? '' : '<p class="ph-box"><mark class="ph">CHECKOUT_URL not set. Buttons do not go anywhere yet.</mark></p>'}
+      </div></div>`,
+    },
+  ];
 
-<!-- Checkout button 1 -->
-<section class="section cta-section">
-  <div class="wrap center">${cta(c.cta.first.button, c.cta.first.support, 'first')}</div>
-</section>
-
-<!-- Print what you need -->
-<section class="section">
-  <div class="wrap narrow center">
-    <div class="print-card">
-      <div class="print-ico">${icon('printer', 34)}</div>
-      <h2>${esc(c.print.title)}</h2>
-      <p class="lead">${esc(c.print.text)}</p>
-      <ul class="chips">${c.print.points.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-    </div>
-  </div>
-  <div class="wrap">${mealsStrip}</div>
-</section>
-
-<!-- A look inside -->
-<section class="section" id="look">
-  <div class="wrap">
-    ${heading(c.look.title)}
-    <p class="lead center">${esc(c.look.intro)}</p>
-    <div class="pages">${c.look.pages
-      .map((p) => `<figure><img src="${esc(p.src)}" alt="${esc(p.alt)}" width="800" height="1035" loading="lazy">${p.caption ? `<figcaption>${esc(p.caption)}</figcaption>` : ''}</figure>`)
-      .join('')}</div>
-  </div>
-</section>
-${phrase(c.phrases.afterLook)}
-
-<!-- How it works -->
-<section class="section">
-  <div class="wrap narrow">
-    ${heading(c.steps.title)}
-    <ol class="steps">${c.steps.items.map((s) => `<li><div><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></div></li>`).join('')}</ol>
-    <p class="note">${esc(c.steps.note)}</p>
-  </div>
-</section>
-
-<!-- Checkout button 2 -->
-<section class="section cta-section">
-  <div class="wrap center">${cta(c.cta.mid.button, c.cta.mid.support, 'mid')}</div>
-</section>
-
-<!-- Trust: dietitian review, customer reviews, creator (hidden until real) -->
-${review}
-${testimonials}
-${creator}
-
-<!-- Fit -->
-<section class="section">
-  <div class="wrap narrow">
-    <h2>${esc(c.fit.title)}</h2>
-    <p>${esc(c.fit.intro)}</p>
-    <p class="list-intro">${esc(c.fit.listIntro)}</p>
-    <ul class="inside compact">${c.fit.items.map((i) => `<li>${check}<span>${esc(i)}</span></li>`).join('')}</ul>
-    <p class="note">${esc(c.fit.note)}</p>
-  </div>
-</section>
-
-<!-- Guarantee -->
-${guarantee}
-
-<!-- FAQ -->
-<section class="section">
-  <div class="wrap narrow">
-    ${heading(c.faq.title)}
-    <div class="faq">${faqItems.join('')}</div>
-  </div>
-</section>
-${phrase(c.phrases.beforeFinal)}
-
-<!-- Final offer + checkout button 3 -->
-<section class="section final" id="buy">
-  <div class="wrap narrow center">
-    <h2>${esc(c.cta.final.title)}</h2>
-    ${deco}
-    <p class="final-lines">${c.cta.final.lines.map((l) => `<span>${esc(l)}</span>`).join('')}</p>
-    <p class="price-line">${esc(c.cta.final.priceLine)}</p>
-    ${cta(c.cta.final.button, c.cta.final.support, 'final')}
-    ${checkoutSet ? '' : '<p class="ph-box"><mark class="ph">CHECKOUT_URL not set. Buttons do not go anywhere yet.</mark></p>'}
-  </div>
-</section>
-
+  const body = `
+<main id="main">
+${assemble(sections, 'navy')}
 </main>
 ${footer()}`;
   return layout({ title: c.seo.title, description: c.seo.description, path: '/', body, page: 'home' });
@@ -426,6 +479,7 @@ if (siteUrl) {
 const blockers = new Set();
 for (const [, html] of pages) for (const m of html.matchAll(/<mark class="ph"[^>]*>\[(.+?)\]<\/mark>/g)) blockers.add(m[1]);
 if (!checkoutSet) blockers.add('CHECKOUT_URL');
+if (/\[\[/.test(cfg.freeRecipe.url)) blockers.add('FREE_RECIPE_URL (where the free recipe button goes)');
 for (const [k, v] of Object.entries(cfg.pages)) if (v.draft) blockers.add(`Attorney review of the ${k} page`);
 if (/placeholder/i.test(cfg.images.kitMockup)) blockers.add('Real kit mockup photo (images.kitMockup is still a placeholder)');
 if (cfg.look.pages.some((p) => /placeholder/i.test(p.src))) blockers.add('Real previews of the Fridge Chart and a Recipe Card (look.pages are still placeholders)');
@@ -435,7 +489,6 @@ const optional = [];
 if (!cfg.testimonials.items.length) optional.push('[REAL REVIEW] customer quotes (testimonials.items): section hidden');
 if (!(cfg.review.reviewerName && cfg.review.credential && cfg.review.text)) optional.push('[RD NAME, CREDENTIALS] dietitian review (review.*): section hidden');
 if (!cfg.creator.paragraphs.length) optional.push('Creator introduction (creator.paragraphs): section hidden');
-if (!cfg.images.hero.src) optional.push('Opening food photo (images.hero): hidden');
 if (!cfg.images.meals.length) optional.push('Everyday-meal photo strip (images.meals): hidden');
 const warnings = [];
 if (!cfg.tracking.metaPixelId) warnings.push('META_PIXEL_ID is empty: Meta Pixel is not loaded.');

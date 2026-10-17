@@ -67,34 +67,65 @@ export default {
     // for your real photo. No generated people.
     kitMockup: '/images/placeholder-kit-mockup.svg',
     kitMockupAlt: 'The printed kit on a kitchen table, with the fridge chart on the refrigerator',
-    // Optional appetizing everyday-meal photos. Empty = hidden.
-    hero: { src: '', alt: '' },
+    // Optional appetizing everyday-meal photos (3-photo strip). Empty = hidden.
     meals: [
       // { src: '/meal-1.jpg', alt: 'Describe the dish' },
     ],
   },
 
-  // ---------- Headline A/B ----------
-  // Default is A. Open the page with ?v=b to see variant B.
-  headline: {
-    a: 'Now what do I eat?',
-    b: 'Know exactly what to eat, buy and do every day, so you stop guessing.',
+  // ---------- 1. HOOK (very first thing on the page, above the logo) ----------
+  // **double asterisks** = highlighted words. Default is A. Open the page with ?v=b to see B.
+  // A is aggressive on purpose. B is the softer version if an ad platform or a reviewer pushes back.
+  hook: {
+    a: {
+      kicker: 'Prediabetes warning',
+      line: 'Heard “prediabetes” and left with **zero idea** what to eat?',
+      sub: 'Stop guessing. Know exactly what to eat, buy and do every day.',
+    },
+    b: {
+      kicker: 'Prediabetes and your plate',
+      line: 'Another grocery trip… and still no answer to **“Now what do I eat?”**',
+      sub: 'Stop guessing. Know exactly what to eat, buy and do every day.',
+    },
   },
 
-  // ---------- 1. Pain / opening ----------
+  // ---------- 4. Prediabetes in the U.S. (news-style card, real CDC data only) ----------
+  news: {
+    label: 'U.S. health news',
+    source: 'CDC data',
+    headline: 'Prediabetes in America',
+    bigNumber: '115.2 million',
+    bigText: 'U.S. adults are estimated to have prediabetes.',
+    secondNumber: '31.3 million',
+    secondText: 'of them are age 65 or older.',
+    note: 'Many people don’t know they are in this group, and many are left asking the same question: what do I eat?',
+    cite: 'Source: CDC, National Diabetes Statistics Report',
+    citeUrl: 'https://www.cdc.gov/diabetes/php/data-research/index.html',
+  },
+
+  // ---------- 5. Free recipe button (the sign-up flow gets structured later) ----------
+  // Point it to a page/form with FREE_RECIPE_URL (env var) or freeRecipe.url.
+  freeRecipe: {
+    button: 'GET A FREE RECIPE',
+    support: 'A free taste of what’s inside the kit.',
+    url: env.FREE_RECIPE_URL || '[[FREE_RECIPE_URL]]',
+  },
+
+  // ---------- 6. Pain (agitate it, then name the way out) ----------
   pain: {
+    title: 'Sound familiar?',
+    cards: [
+      { icon: 'question', title: 'I don’t know what to eat tonight.', text: 'Dinner time comes, and so does the same question.' },
+      { icon: 'cart', title: 'The grocery store feels confusing.', text: 'Every label says something different.' },
+      { icon: 'search', title: 'I’m tired of Googling.', text: 'Ten websites, ten different answers.' },
+      { icon: 'heart', title: 'I don’t want to give up everything I love.', text: 'You want real food, not a plan you’ll quit by Friday.' },
+    ],
+    bigLine: 'Now what do I eat?',
     lead: 'Another grocery trip. Another list of ingredients. And the same unanswered question when it’s time to make a meal.',
     paragraphs: [
       'You search for ideas. Save a few recipes. Read another article.',
       'One says to avoid a food. Another says it belongs on your plate.',
       'Meanwhile, dinner still needs to happen.',
-    ],
-    listIntro: 'Without a clear plan, the decisions keep piling up:',
-    list: [
-      'I don’t know what to eat tonight.',
-      'The grocery store feels confusing.',
-      'I’m tired of Googling.',
-      'I don’t want to give up everything I love.',
     ],
     closing: [
       'A folder full of saved recipes doesn’t tell you what to put in your cart this week.',
@@ -137,8 +168,8 @@ export default {
 
   // ---------- Buttons (3 on the page) ----------
   cta: {
-    first: { button: 'GET THE EVERYDAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
-    mid: { button: 'GET THE EVERYDAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
+    first: { title: 'Ready to stop guessing?', button: 'GET THE EVERYDAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
+    mid: { title: 'Print it. Stick it up. Follow along.', button: 'GET THE EVERYDAY PLATE — {price}', support: 'One-time purchase · Instant PDF download' },
     final: {
       title: 'Give your next grocery trip a clear plan.',
       lines: ['Six printable pieces.', 'Thirty recipe cards.', 'Fourteen days of meals, ready to stick on the fridge.'],
@@ -212,6 +243,12 @@ export default {
       'A chart on the fridge instead of another tab on your phone.',
       'Recipes and shopping lists you can print and write on.',
       'Practical material to talk through with your doctor or dietitian.',
+    ],
+    notTitle: 'It is probably not for you if you want:',
+    notItems: [
+      'A shortcut or an overnight miracle.',
+      'Personalized medical care or a diagnosis. Please see your doctor for that.',
+      'To change or stop any medication. Always follow your doctor’s advice.',
     ],
     note: 'It provides general information. Individual nutrition needs require personalized guidance.',
   },

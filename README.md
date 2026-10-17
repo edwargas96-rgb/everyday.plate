@@ -3,10 +3,16 @@
 Static, mobile-first sales page (American English) for **The Everyday Plate, the 14-Day Printable Kit**: 6 printable PDF pieces (US Letter). No dependencies: `build.mjs` turns `site.config.mjs` into plain HTML in `dist/`.
 Look: cream background, navy `#172B4D` + action blue `#2563EB`, hearts and short encouraging phrases (Caveat), Lora 500 + Source Sans 3 (self-hosted), logo in `static/images/logo.webp`. Colors are CSS variables at the top of `src/styles.css`.
 
-## Page order
-Pain ("Now what do I eat?") → encouragement → product name + promise + kit mockup → What's in the kit (6 pieces) → **button 1** → Print what you need → A look inside (2 previews) → How it works → **button 2** → dietitian review / customer reviews / creator (hidden until real) → Is this kit a good fit? → guarantee → FAQ → final offer + **button 3** → footer.
+## Page order (top to bottom)
+1. **Hook** (navy band, very first thing, above the logo): "Heard “prediabetes” and left with zero idea what to eat?" · B version: `/?v=b`
+2. **Logo + the deliverable** (kit mockup, badges, name, promise)
+3. **U.S. news card** (CDC data: 115.2 million adults; 31.3 million age 65+) + **GET A FREE RECIPE** button (`freeRecipe.url` / `FREE_RECIPE_URL`; flow to be structured later)
+4. **Pain** ("Sound familiar?" cards, "Now what do I eat?")
+5. What's in the kit (6 pieces) → **buy button 1** → Print what you need → A look inside → How it works → **buy button 2**
+6. Dietitian review / customer reviews / creator (hidden until real)
+7. Is this kit a good fit? (for / not for) → guarantee → FAQ → final offer → **buy button 3** → footer
 Pages: `/terms/`, `/privacy/`, `/disclaimer/`, `/contact/`, `/thank-you/` (Purchase event, not indexed).
-Headline B: open `/?v=b` (shows "Know exactly what to eat, buy and do every day, so you stop guessing."). Edit both in `headline` in the config.
+Sections are colored bands joined by wave dividers; colors alternate automatically, so adding or hiding a section never breaks the rhythm.
 
 ## Edit
 Everything is in `site.config.mjs` (variables `{price} {brand} {days}` work inside any text).
@@ -24,10 +30,10 @@ Placeholders to replace (they are clearly labeled and count as launch blockers):
 - Optional: `images.hero`, `images.meals` (everyday-meal photos), `static/og.png` (1200×630 share image)
 
 ## Deploy on Vercel
-Import this repo (framework preset: Other; `vercel.json` sets build and output). Optional environment variables: `CHECKOUT_URL`, `META_PIXEL_ID`, `SITE_URL`, `SUPPORT_EMAIL`. Redeploy after changing them. Checkout's post-purchase redirect: `https://yourdomain.com/thank-you/`.
+Import this repo (framework preset: Other; `vercel.json` sets build and output). Optional environment variables: `CHECKOUT_URL`, `FREE_RECIPE_URL`, `META_PIXEL_ID`, `SITE_URL`, `SUPPORT_EMAIL`. Redeploy after changing them. Checkout's post-purchase redirect: `https://yourdomain.com/thank-you/`.
 
 ## Meta Pixel
-`PageView` + `ViewContent` (with a generic `headline_variant`) on load, `InitiateCheckout` on any buy button, `Purchase` on `/thank-you/`. Params are generic (`content_name: "14-Day Printable Kit"`): never put a health term in them or in the domain/URL.
+`PageView` + `ViewContent` (with a generic `headline_variant`) on load, `Lead` on the free recipe button, `InitiateCheckout` on any buy button, `Purchase` on `/thank-you/`. Params are generic (`content_name: "14-Day Printable Kit"`): never put a health term in them or in the domain/URL.
 
 ## Guardrails
-`npm run check` (also on every Vercel build) fails on: cure, reverse, treat, heal, A1C, guaranteed, reset, fix, solution, control, ebook, "get off medication", "diabetes-proof", "you have prediabetes", the old brand names, "The Everyday Plate" spelling, "prediabetes" outside the FAQ. The exact disclaimer sits by all three buy buttons and in the footer. No invented reviews, credentials or counts.
+`npm run check` (also on every Vercel build) fails on: cure, reverse, treat, heal, A1C, guaranteed, reset, fix, solution, control, ebook, "get off medication", "diabetes-proof", "you have prediabetes", the old brand names, "The Everyday Plate" spelling, the hook must stay above the logo. The exact disclaimer sits by all three buy buttons and in the footer. No invented reviews, credentials or counts.

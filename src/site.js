@@ -4,12 +4,16 @@
   function track(name, params) { try { if (S.pixel && window.fbq) window.fbq('track', name, params); } catch (e) {} }
   var base = { content_name: S.contentName, value: S.value, currency: S.currency };
 
-  // Headline A/B: ?v=b shows variant B. The variant is sent as a generic custom parameter.
+  // Hook A/B: ?v=b shows variant B. The variant is sent as a generic custom parameter.
   var variant = 'a';
   if (S.page === 'home') {
-    var h = document.querySelector('h1[data-b]');
-    if (h && new URLSearchParams(location.search).get('v') === 'b') { h.textContent = h.getAttribute('data-b'); variant = 'b'; }
+    if (new URLSearchParams(location.search).get('v') === 'b') {
+      var A = document.querySelector('.hook-copy[data-v="a"]'), B = document.querySelector('.hook-copy[data-v="b"]');
+      if (A && B) { A.hidden = true; B.hidden = false; variant = 'b'; }
+    }
     track('ViewContent', { content_name: S.contentName, value: S.value, currency: S.currency, headline_variant: variant });
+    var free = document.querySelector('a[data-free]');
+    if (free) free.addEventListener('click', function () { track('Lead', { content_name: 'Free recipe' }); });
   }
 
   if (S.page === 'thank-you') {
