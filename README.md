@@ -1,6 +1,6 @@
 # The Everyday Plate: sales page (printable kit)
 
-Static, mobile-first sales page (American English) for **The Everyday Plate, the 14-Day Printable Kit**: 6 printable PDF pieces (US Letter). No dependencies: `build.mjs` turns `site.config.mjs` into plain HTML in `dist/`.
+Static, mobile-first sales page (American English) for **The Everyday Plate, the 14-Day Printable Kit**: 6 printable PDF pieces. No dependencies: `build.mjs` turns `site.config.mjs` into plain HTML in `dist/`.
 Look: cream background, navy `#172B4D` + action blue `#2563EB`, hearts and short encouraging phrases (Caveat), Lora 500 + Source Sans 3 (self-hosted), logo in `static/images/logo.webp`. Colors are CSS variables at the top of `src/styles.css`.
 
 ## Page order (top to bottom)

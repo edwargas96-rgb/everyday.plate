@@ -88,6 +88,60 @@
     });
   }
 
+
+  // ---- Tear-the-page intro: swipe down (or tap) to rip each sheet, then move on to "A look inside" ----
+  var tear = document.getElementById('tear');
+  if (tear && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    root.classList.add('js-tear');
+    var sheets = $all('.sheet', tear), cur = 0;
+    var doneEl = tear.querySelector('.tear-done');
+    function place() {
+      sheets.forEach(function (sh, i) {
+        if (i < cur) { sh.classList.add('gone'); sh.removeAttribute('data-pos'); return; }
+        sh.setAttribute('data-pos', i - cur);
+        sh.tabIndex = i === cur ? 0 : -1;
+        sh.setAttribute('role', 'button');
+        sh.setAttribute('aria-hidden', i === cur ? 'false' : 'true');
+        if (i === cur) sh.setAttribute('aria-label', sh.textContent.trim() + ' (tap or press Enter to tear)');
+      });
+    }
+    function finish() {
+      tear.classList.add('is-done'); if (doneEl) doneEl.hidden = false;
+      var look = document.getElementById('look');
+      if (look) setTimeout(function () { look.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 900);
+    }
+    function ripOff(sh) {
+      var half = sh.querySelectorAll('.half');
+      sh.classList.add('snap');
+      Array.prototype.forEach.call(half, function (h) { h.style.setProperty('--p', 1); });
+      setTimeout(function () { cur++; if (cur >= sheets.length) { sheets.forEach(function (x) { x.classList.add('gone'); }); finish(); } else place(); }, 420);
+    }
+    function setP(sh, p) { Array.prototype.forEach.call(sh.querySelectorAll('.half'), function (h) { h.style.setProperty('--p', p); }); }
+    sheets.forEach(function (sh, i) {
+      var y0 = null, moved = false;
+      sh.addEventListener('pointerdown', function (e) {
+        if (i !== cur) return;
+        y0 = e.clientY; moved = false; sh.classList.remove('snap');
+        try { sh.setPointerCapture(e.pointerId); } catch (x) {}
+      });
+      sh.addEventListener('pointermove', function (e) {
+        if (y0 === null) return;
+        var dy = e.clientY - y0;
+        if (Math.abs(dy) > 6) moved = true;
+        setP(sh, Math.max(0, Math.min(1, dy / (sh.offsetHeight * 0.8))));
+      });
+      function end(e) {
+        if (y0 === null) return;
+        var dy = e.clientY - y0; y0 = null; sh.classList.add('snap');
+        if (!moved || dy / (sh.offsetHeight * 0.8) > 0.35) ripOff(sh); else setP(sh, 0);
+      }
+      sh.addEventListener('pointerup', end);
+      sh.addEventListener('pointercancel', function () { y0 = null; sh.classList.add('snap'); setP(sh, 0); });
+      sh.addEventListener('keydown', function (e) { if (i === cur && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); sh.classList.add('snap'); ripOff(sh); } });
+    });
+    place();
+  }
+
   // ---- Copy the coupon code ----
   $all('[data-copy]').forEach(function (btn) {
     btn.addEventListener('click', function () {

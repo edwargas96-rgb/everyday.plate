@@ -212,25 +212,24 @@ export default {
     },
   },
 
-  // ---------- 6. Pain (agitate it, then name the way out) ----------
-  pain: {
+  // ---------- Tear-the-page intro (right after the product name; replaces the old long pain section) ----------
+  tear: {
     title: 'Sound familiar?',
-    cards: [
-      { icon: 'question', title: 'I don’t know what to eat tonight.', text: 'Dinner time comes, and so does the same question.' },
-      { icon: 'cart', title: 'The grocery store feels confusing.', text: 'Every label says something different.' },
-      { icon: 'search', title: 'I’m tired of Googling.', text: 'Ten websites, ten different answers.' },
-      { icon: 'heart', title: 'I don’t want to give up everything I love.', text: 'You want real food, not a plan you’ll quit by Friday.' },
+    hint: 'Swipe down to tear',
+    skip: 'Skip',
+    sheets: [
+      'I don’t know what to eat tonight.',
+      'Sugar labels at the store feel confusing.',
+      'I’m tired of starting over every Monday.',
+      'Every diet I try feels like a lot.',
+      'I just want a simple plan on the fridge.',
     ],
-    image: { src: '/images/pain-dinner.webp', alt: 'A skillet of sliced chicken and colorful bell peppers, ready for dinner', size: [1000, 625] },
-    bigLine: 'Now what do I eat?',
-    lead: 'One website says avoid a food. Another says it belongs on your plate. Meanwhile, dinner still needs to happen.',
-    paragraphs: [],
-    closing: ['You need a practical place to start.'],
+    done: 'Here’s a simple place to start.',
+    doneLink: 'See what’s inside',
   },
 
   // ---------- Encouraging phrases (hearts bands) ----------
   phrases: {
-    afterPain: 'You’ve got this. One good meal at a time.',
     afterLook: 'Small steps count. Progress, not perfection.',
     beforeFinal: 'Be kind to yourself. Dinner doesn’t have to be complicated.',
   },
@@ -245,7 +244,7 @@ export default {
     paragraphs: [
       'Six printable pieces that bring your meals, shopping and everyday routines together on paper, where you can see them.',
     ],
-    chips: ['6 printable pieces', 'PDF · US Letter', 'Black & white or color', 'No app · No login · No subscription'],
+    chips: ['6 printable pieces', 'Black & white or color', 'No app · No login · No subscription'],
   },
 
   // ---------- 4b. A look inside: covers + a short synopsis of each of the 6 pieces ----------
@@ -279,7 +278,7 @@ export default {
   print: {
     title: 'Print what you need',
     text: 'Print it all or just the pages you want. Works in black and white. No app to download.',
-    points: ['Prints on standard US Letter paper', 'Black and white or color', 'Or view it on your phone or tablet'],
+    points: ['Prints on standard paper at home', 'Black and white or color', 'Or view it on your phone or tablet'],
   },
 
   // ---------- 6. How it works ----------
@@ -377,7 +376,7 @@ export default {
   faq: {
     title: 'A few questions before you start',
     items: [
-      { q: 'Is this a physical product?', a: 'No. It’s a digital PDF kit in US Letter size. You download it, then print it at home or at a print shop, or view it on a phone or tablet.' },
+      { q: 'Is this a physical product?', a: 'No. It’s a digital PDF kit. You download it, then print it at home or at a print shop, or view it on a phone or tablet.' },
       { q: 'Do I need to print it?', a: 'You can print it or view it on your phone or tablet. Printing is optional.' },
       { q: 'Does it work in black and white?', a: 'Yes. It’s designed to print well in black and white, or in color if you like.' },
       { q: 'What does the kit include?', a: 'The Fridge Chart, the 14-Day Meal Plan, two Weekly Grocery Lists (budget swaps included), 30 Recipe Cards, the 14-Day Habit & Meal Tracker, and Questions for My Doctor.' },

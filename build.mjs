@@ -323,7 +323,7 @@ function home() {
       html: `<div class="wrap center">
         <a class="logo-link" href="/" aria-label="${esc(c.site.brand)}">${logo('logo logo-xl')}</a>
         <div class="stage">
-          <span class="badge b1">${HEART} PDF · US Letter</span>
+          <span class="badge b1">${HEART} Digital PDF</span>
           <img class="mockup" src="${esc(c.images.kitMockup)}" alt="${esc(c.images.kitMockupAlt)}" width="${c.images.kitMockupSize[0]}" height="${c.images.kitMockupSize[1]}" fetchpriority="high">
           <span class="badge b2">${HEART} Print at home</span>
         </div>
@@ -333,6 +333,20 @@ function home() {
         <p class="for-line">${esc(c.meet.forLine)}</p>
         <p class="promise">${esc(c.meet.promise)}</p>
         <ul class="chips">${c.meet.chips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+      </div>`,
+    },
+    // Tear-the-page intro: name the pain first, then reveal the kit
+    {
+      bg: 'navy',
+      cls: 'tear-band',
+      html: `${RAYS}<div class="wrap narrow center">
+        <h2>${esc(c.tear.title)}</h2>
+        <div class="tear" id="tear" data-done="${esc(c.tear.done)}">
+          <ol class="sheets">${c.tear.sheets.map((x) => `<li class="sheet"><div class="half l"><span>${esc(x)}</span></div><div class="half r" aria-hidden="true"><span>${esc(x)}</span></div></li>`).join('')}</ol>
+          <p class="tear-hint" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v14M6 12l6 6 6-6"/></svg> ${esc(c.tear.hint)}</p>
+          <p class="tear-done" hidden>${esc(c.tear.done)} <a href="#look">${esc(c.tear.doneLink)}</a></p>
+          <a class="tear-skip" href="#look">${esc(c.tear.skip)}</a>
+        </div>
       </div>`,
     },
     // 4b. A look inside: the six covers with a short synopsis of each (replaces the old "What's in the kit")
@@ -365,27 +379,6 @@ function home() {
           <p class="news-note">${esc(c.news.note)}</p>
           <p class="cite"><a href="${esc(c.news.citeUrl)}" target="_blank" rel="noopener nofollow">${esc(c.news.cite)}</a></p>
         </article>
-      </div>`,
-    },
-    // 6. Pain
-    {
-      bg: 'navy',
-      cls: 'pain',
-      html: `${RAYS}<div class="wrap">
-        <h2 class="center">${esc(c.pain.title)}</h2>
-        <div class="pains">${c.pain.cards
-          .map((p) => `<article class="pain-card"><div class="pain-ico">${icon(p.icon, 26)}</div><div><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div></article>`)
-          .join('')}</div>
-        <div class="pain-split">
-          <figure class="pain-photo"><img src="${esc(c.pain.image.src)}" alt="${esc(c.pain.image.alt)}" width="${c.pain.image.size[0]}" height="${c.pain.image.size[1]}" loading="lazy" decoding="async"></figure>
-          <div class="pain-story">
-            <p class="bigline">${esc(c.pain.bigLine)}</p>
-            <p class="lead-pain">${esc(c.pain.lead)}</p>
-            ${c.pain.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}
-            ${c.pain.closing.map((p, i) => `<p${i === c.pain.closing.length - 1 ? ' class="strong"' : ''}>${esc(p)}</p>`).join('')}
-            <p class="hand">${HEART} ${esc(c.phrases.afterPain)} ${HEART}</p>
-          </div>
-        </div>
       </div>`,
     },
     // 8. Buy button 1
