@@ -29,7 +29,7 @@ export default {
     brand: 'The Everyday Plate', // always written exactly like this: "The Everyday Plate" (one word)
     productName: 'The Everyday Plate',
     productSubtitle: 'The 14-Day Printable Kit: Easy Meals, Grocery Lists & Daily Habits',
-    url: env.SITE_URL || '', // e.g. https://yourdomain.com
+    url: env.SITE_URL || (env.VERCEL_PROJECT_PRODUCTION_URL ? 'https://' + env.VERCEL_PROJECT_PRODUCTION_URL : ''), // set SITE_URL to your own domain
     supportEmail: env.SUPPORT_EMAIL || '[[support@yourdomain.com]]',
     legalName: '[[Legal business name]]',
     legalAddress: '[[Business mailing address]]',
