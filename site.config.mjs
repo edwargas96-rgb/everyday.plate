@@ -50,7 +50,7 @@ export default {
   },
   // Merchant-of-record checkout link (or set the CHECKOUT_URL env var in Vercel).
   // The $7 low-sugar snacks bump is a checkbox at checkout, not on this page.
-  checkoutUrl: env.CHECKOUT_URL || '[[CHECKOUT_URL]]',
+  checkoutUrl: env.CHECKOUT_URL || 'https://pay.hotmart.com/X108072476H?checkoutMode=10',
   passQueryToCheckout: true, // forwards utm_* and fbclid to the checkout link
 
   // ---------- Meta Pixel (empty = not loaded) ----------
@@ -199,11 +199,11 @@ export default {
   pricing: {
     stack: '',
     fullPriceLabel: 'Full price',
-    lockedLabel: 'Your price',
+    lockedLabel: 'Your discount',
     lockedBadge: 'Locked',
-    lockedHeadline: 'Your price is locked.',
+    lockedHeadline: 'Your discount is locked.',
     lockedText: 'Tear through “Sound familiar?” above and your coupon is yours.',
-    lockedLink: 'Unlock my price',
+    lockedLink: 'Unlock my discount',
     unlockedLabel: 'Coupon {couponCode} unlocked',
     modal: {
       title: 'Before you go: a discount is waiting',
@@ -233,7 +233,7 @@ export default {
       codeLabel: 'Your coupon',
       copy: 'Copy code',
       copied: 'Copied!',
-      active: 'It’s saved on this device and applied automatically at checkout. Now take a look at what you’re getting.',
+      active: 'Your {couponPercent} off is saved on this device and applied automatically at checkout. Now take a look at what you’re getting.',
       link: 'See what’s inside',
     },
   },

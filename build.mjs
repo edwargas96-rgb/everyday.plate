@@ -22,6 +22,7 @@ const vars = {
   price: PRICE_TOKEN,
   listPrice: raw.price.display,
   couponPrice: raw.price.coupon.display,
+  couponPercent: `${Math.round((1 - raw.price.coupon.amount / raw.price.amount) * 100)}%`,
   couponCode: raw.price.coupon.code,
   pieceValue: raw.price.pieceValue,
   brand: raw.site.brand,
@@ -111,11 +112,11 @@ const priceBox = ({ stack = false } = {}) => {
   return `<div class="pricebox">
     ${stack && p.stack ? `<p class="stack">${esc(p.stack)}</p>` : ''}
     <div class="only-locked">
-      <p class="pb-row"><span class="pb-label">${esc(p.lockedLabel)}</span> <span class="pb-big is-locked">${esc(cfg.price.coupon.display)}</span> <span class="lock-badge">${icon('lock', 14)} ${esc(p.lockedBadge)}</span></p>
+      <p class="pb-row"><span class="pb-label">${esc(p.lockedLabel)}</span> <span class="pb-big is-locked">${esc(vars.couponPercent)} OFF</span> <span class="lock-badge">${icon('lock', 14)} ${esc(p.lockedBadge)}</span></p>
       <p class="nudge"><strong>${esc(p.lockedHeadline)}</strong> ${esc(p.lockedText)} <a href="${esc(freeHref)}" data-free>${esc(p.lockedLink)}</a></p>
     </div>
     <div class="only-unlocked">
-      <p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span></p>
+      <p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span> <span class="lock-badge pct">${esc(vars.couponPercent)} OFF</span></p>
       <p class="applied">${HEART} ${esc(p.unlockedLabel)}</p>
     </div>
   </div>`;
