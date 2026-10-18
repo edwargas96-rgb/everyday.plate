@@ -7,7 +7,7 @@
 
   function track(name, params) { try { if (S.pixel && window.fbq) window.fbq('track', name, params); } catch (e) {} }
   function trackCustom(name) { try { if (S.pixel && window.fbq) window.fbq('trackCustom', name); } catch (e) {} }
-  function current() { return { content_name: S.contentName, value: unlocked ? C.amount : S.value, currency: S.currency }; }
+  function current() { return { content_name: S.contentName, value: C.amount, currency: S.currency }; }
   function $all(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
 
   function paintPrices() { if (unlocked) $all('[data-price]').forEach(function (el) { el.textContent = C.display; }); }
@@ -46,11 +46,12 @@
   var cont = modal ? modal.querySelector('[data-continue]') : null;
   var canModal = modal && typeof modal.showModal === 'function';
   var links = $all('a[data-checkout]').map(function (a) { return { a: a, base: a.getAttribute('href') }; });
-  function refreshLinks() { links.forEach(function (l) { l.a.setAttribute('href', withParams(l.base, unlocked)); }); }
+  // The coupon is applied to every checkout link from the start (tearing the page only reveals the code).
+  function refreshLinks() { links.forEach(function (l) { l.a.setAttribute('href', withParams(l.base, true)); }); }
   refreshLinks();
   links.forEach(function (l) {
     l.a.addEventListener('click', function (e) {
-      if (!unlocked && canModal) {
+      if (false && !unlocked && canModal) {
         // Buying before reading the free recipe: suggest the recipe (and the coupon) first.
         e.preventDefault();
         if (cont) cont.setAttribute('href', withParams(l.base, false));
