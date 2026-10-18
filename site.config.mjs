@@ -31,7 +31,7 @@ export default {
     productName: 'The Everyday Plate',
     productSubtitle: 'The 14-Day Printable Kit: Easy Meals, Grocery Lists & Daily Habits',
     url: env.SITE_URL || (env.VERCEL_PROJECT_PRODUCTION_URL ? 'https://' + env.VERCEL_PROJECT_PRODUCTION_URL : ''), // set SITE_URL to your own domain
-    supportEmail: env.SUPPORT_EMAIL || '[[support@yourdomain.com]]',
+    supportEmail: env.SUPPORT_EMAIL || 'suporte@nobilex.com.br',
     legalName: 'Nobilex',
     legalAddress: '[[Business mailing address]]',
     effectiveDate: 'October 2026',
