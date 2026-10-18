@@ -32,11 +32,11 @@ export default {
     productSubtitle: 'The 14-Day Printable Kit: Easy Meals, Grocery Lists & Daily Habits',
     url: env.SITE_URL || (env.VERCEL_PROJECT_PRODUCTION_URL ? 'https://' + env.VERCEL_PROJECT_PRODUCTION_URL : ''), // set SITE_URL to your own domain
     supportEmail: env.SUPPORT_EMAIL || '[[support@yourdomain.com]]',
-    legalName: '[[Legal business name]]',
+    legalName: 'Nobilex',
     legalAddress: '[[Business mailing address]]',
     effectiveDate: 'October 2026',
   },
-  logo: { src: '/images/logo.webp', width: 900, height: 237 },
+  logo: { src: '/images/logo.webp', width: 760, height: 200 },
 
   // ---------- Price & checkout ----------
   // Full price is what a buyer pays WITHOUT the coupon (6 pieces x $15). Opening the free recipe
@@ -77,7 +77,7 @@ export default {
   images: {
     // The kit on the kitchen table (illustrative image). Swap it for a real photo whenever you have one.
     kitMockup: '/images/kit-mockup.webp',
-    kitMockupSize: [1536, 1024], // width, height of the file above
+    kitMockupSize: [1200, 800], // width, height of the file above
     kitMockupAlt: 'The printed kit on a kitchen table, with the fridge chart on the refrigerator',
     // Optional appetizing everyday-meal photos (3-photo strip). Empty = hidden.
     meals: [
@@ -199,12 +199,12 @@ export default {
   pricing: {
     stack: '',
     fullPriceLabel: 'Full price',
-    lockedLabel: 'Your discount',
-    lockedBadge: 'Applied',
-    lockedHeadline: 'Your discount is ready.',
-    lockedText: 'It’s applied automatically at checkout. Tear through “Sound familiar?” above to see your coupon code.',
+    lockedLabel: 'Your price',
+    lockedBadge: 'OFF',
+    lockedHeadline: 'Your discount is applied automatically at checkout.',
+    lockedText: 'Want to see your coupon code? Tear through “Sound familiar?” above.',
     lockedLink: 'Show my code',
-    unlockedLabel: 'Coupon {couponCode} unlocked',
+    unlockedLabel: 'Your code: {couponCode}',
     modal: {
       title: 'Before you go: a discount is waiting',
       text: 'Tear through the “Sound familiar?” page and a special coupon is yours. It takes a few seconds, and it’s applied at checkout.',
@@ -262,12 +262,12 @@ export default {
     title: 'A look inside',
     intro: 'Six printable pieces. Here’s what each one is for.',
     items: [
-      { src: '/images/cover-fridge-chart.webp', alt: 'Cover of the Fridge Chart, the Everyday Food Guide', title: 'Fridge Chart', text: 'One page: “Eat More / Enjoy Sometimes / Go Easy On.” Stick it on your fridge.' },
-      { src: '/images/cover-meal-plan.webp', alt: 'Cover of the 14-Day Meal Plan', title: '14-Day Meal Plan', text: 'One block per day: breakfast, lunch, dinner and a snack, in large, easy-to-read type.' },
-      { src: '/images/cover-grocery-lists.webp', alt: 'Cover of the Weekly Grocery Lists, Week 1 and Week 2', title: 'Weekly Grocery Lists', text: 'Two lists to check against your kitchen, including budget swaps.' },
-      { src: '/images/cover-recipe-cards.webp', alt: 'Cover of the 30 Simple Recipes, recipe cards', title: '30 Recipe Cards', text: 'One recipe per page, with photos, servings, and carbs and fiber per serving. Regular grocery-store ingredients, ready in 30 minutes or less. No air fryer or Instant Pot.' },
-      { src: '/images/cover-tracker.webp', alt: 'Cover of the 14-Day Tracker, meals and everyday habits', title: '14-Day Habit & Meal Tracker', text: 'Check off meals, a 10-minute walk after eating, and sleep.' },
-      { src: '/images/cover-questions-for-my-doctor.webp', alt: 'Cover of Questions for My Doctor', title: 'Questions for My Doctor', text: 'One page to bring to your next appointment.' },
+      { src: '/images/cover-fridge-chart.webp', alt: 'Cover of the Fridge Chart, the Everyday Food Guide', title: 'Fridge Chart', value: '$10', text: 'One page: “Eat More / Enjoy Sometimes / Go Easy On.” Stick it on your fridge.' },
+      { src: '/images/cover-meal-plan.webp', alt: 'Cover of the 14-Day Meal Plan', title: '14-Day Meal Plan', value: '$20', text: 'One block per day: breakfast, lunch, dinner and a snack, in large, easy-to-read type.' },
+      { src: '/images/cover-grocery-lists.webp', alt: 'Cover of the Weekly Grocery Lists, Week 1 and Week 2', title: 'Weekly Grocery Lists', value: '$12', text: 'Two lists to check against your kitchen, including budget swaps.' },
+      { src: '/images/cover-recipe-cards.webp', alt: 'Cover of the 30 Simple Recipes, recipe cards', title: '30 Recipe Cards', value: '$25', text: 'One recipe per page, with photos, servings, and carbs and fiber per serving. Regular grocery-store ingredients, ready in 30 minutes or less. No air fryer or Instant Pot.' },
+      { src: '/images/cover-tracker.webp', alt: 'Cover of the 14-Day Tracker, meals and everyday habits', title: '14-Day Habit & Meal Tracker', value: '$13', text: 'Check off meals, a 10-minute walk after eating, and sleep.' },
+      { src: '/images/cover-questions-for-my-doctor.webp', alt: 'Cover of Questions for My Doctor', title: 'Questions for My Doctor', value: '$10', text: 'One page to bring to your next appointment.' },
     ],
   },
 

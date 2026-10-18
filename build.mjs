@@ -2,7 +2,7 @@
 // Usage: node build.mjs
 //   SHOW_DRAFT=1          shows dashed "edit slots" for sections that are still empty (npm run dev)
 //   STRICT_PLACEHOLDERS=1 fails the build while any launch blocker is open (npm run launch-check)
-import { mkdir, rm, cp, writeFile } from 'node:fs/promises';
+import { mkdir, rm, cp, writeFile, readFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
@@ -107,18 +107,13 @@ const cta = (button, support, where) => `
   </div>`;
 
 // What the buyer sees under a buy button: the full price, or the coupon price once it is unlocked.
-const priceBox = ({ stack = false } = {}) => {
+const priceBox = ({ nudge = false } = {}) => {
   const p = cfg.pricing;
+  const price = `<p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span> <span class="lock-badge pct">${esc(vars.couponPercent)} ${esc(p.lockedBadge)}</span></p>`;
   return `<div class="pricebox">
-    ${stack && p.stack ? `<p class="stack">${esc(p.stack)}</p>` : ''}
-    <div class="only-locked">
-      <p class="pb-row"><span class="pb-label">${esc(p.lockedLabel)}</span> <span class="pb-big is-locked">${esc(vars.couponPercent)} OFF</span> <span class="lock-badge">${icon('lock', 14)} ${esc(p.lockedBadge)}</span></p>
-      <p class="nudge"><strong>${esc(p.lockedHeadline)}</strong> ${esc(p.lockedText)} <a href="${esc(freeHref)}" data-free>${esc(p.lockedLink)}</a></p>
-    </div>
-    <div class="only-unlocked">
-      <p class="pb-row"><s>${esc(cfg.price.display)}</s> <span class="pb-big">${esc(cfg.price.coupon.display)}</span> <span class="lock-badge pct">${esc(vars.couponPercent)} OFF</span></p>
-      <p class="applied">${HEART} ${esc(p.unlockedLabel)}</p>
-    </div>
+    ${price}
+    ${nudge ? `<div class="only-locked"><p class="nudge"><strong>${esc(p.lockedHeadline)}</strong> ${esc(p.lockedText)} <a href="${esc(freeHref)}" data-free>${esc(p.lockedLink)}</a></p></div>
+    <div class="only-unlocked"><p class="applied">${HEART} ${esc(p.unlockedLabel)}</p></div>` : ''}
   </div>`;
 };
 
@@ -247,7 +242,7 @@ const NEWS = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke
 // "A look inside": endless auto-scrolling carousel. Two identical groups give a seamless loop;
 // site.js moves it, and visitors can still swipe or drag it in both directions.
 const slideHtml = (p, i, dup) =>
-  `<article class="carousel-slide"><div class="cover"><img src="${esc(p.src)}" alt="${dup ? '' : esc(p.alt)}" width="800" height="1036" loading="${!dup && i < 2 ? 'eager' : 'lazy'}" decoding="async" draggable="false"><span class="num">${i + 1}</span></div><div class="piece-body"><h3>${esc(p.title)}</h3><p class="val">${esc(cfg.price.pieceValue)} value</p><p>${esc(p.text)}</p></div></article>`;
+  `<article class="carousel-slide"><div class="cover"><img src="${esc(p.src)}" alt="${dup ? '' : esc(p.alt)}" width="560" height="725" loading="${!dup && i < 2 ? 'eager' : 'lazy'}" decoding="async" draggable="false"><span class="num">${i + 1}</span></div><div class="piece-body"><h3>${esc(p.title)}</h3><p class="val">${esc(p.value)} value</p><p>${esc(p.text)}</p></div></article>`;
 const carousel = (items) => `<div class="preview-carousel" role="region" aria-roledescription="carousel" aria-label="${esc(cfg.inside.title)}">
   <div class="carousel-track">
     <div class="carousel-group">${items.map((p, i) => slideHtml(p, i, false)).join('')}</div>
@@ -362,7 +357,7 @@ function home() {
     {
       bg: 'cream',
       id: 'look',
-      html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p>${carousel(c.inside.items)}<div class="deal">${priceBox({ stack: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
+      html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p>${carousel(c.inside.items)}<div class="deal">${priceBox({ nudge: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
     },
     // free recipe button (paused)
     ...(!freeOn ? [] : [{
@@ -612,7 +607,9 @@ for (const [file, html] of pages) {
   await writeFile(out, html);
 }
 await cp(path.join(root, 'static'), dist, { recursive: true });
-await cp(path.join(root, 'src', 'styles.css'), path.join(dist, 'styles.css'));
+const minCss = (c) => c.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').replace(/\s*([{};,])\s*/g, '$1').replace(/;}/g, '}').trim();
+await writeFile(path.join(dist, 'styles.css'), minCss(await readFile(path.join(root, 'src', 'styles.css'), 'utf8')));
+if (!freeOn) await rm(path.join(dist, 'images', 'free-recipe-fajitas-square.webp'), { force: true });
 await cp(path.join(root, 'src', 'site.js'), path.join(dist, 'site.js'));
 await writeFile(path.join(dist, 'robots.txt'), `User-agent: *\nDisallow: /thank-you/\n${siteUrl ? `Sitemap: ${siteUrl}/sitemap.xml\n` : ''}`);
 if (siteUrl) {
@@ -622,6 +619,9 @@ if (siteUrl) {
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${siteUrl}${u}</loc></url>`).join('\n')}\n</urlset>\n`,
   );
 }
+
+const piecesTotal = cfg.inside.items.reduce((n, p) => n + Number(String(p.value).replace(/[^0-9.]/g, '')), 0);
+if (piecesTotal !== cfg.price.amount) throw new Error(`Piece values add up to $${piecesTotal}, but price.amount is $${cfg.price.amount}`);
 
 // ---------- launch readiness ----------
 const blockers = new Set();
