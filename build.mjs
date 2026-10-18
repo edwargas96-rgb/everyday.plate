@@ -357,7 +357,7 @@ function home() {
     {
       bg: 'cream',
       id: 'look',
-      html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p>${carousel(c.inside.items)}<div class="deal">${priceBox({ nudge: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
+      html: `<div class="wrap">${heading(c.inside.title)}<p class="lead center">${esc(c.inside.intro)}</p>${carousel(c.inside.items)}<div class="deal"><p class="hand center deal-hand">${HEART} ${esc(c.phrases.beforeFinal)} ${HEART}</p>${priceBox({ nudge: true })}${cta(c.cta.first.button, c.cta.first.support, 'look')}</div><p class="hand center">${HEART} ${esc(c.phrases.afterLook)} ${HEART}</p></div>`,
     },
     // free recipe button (paused)
     ...(!freeOn ? [] : [{

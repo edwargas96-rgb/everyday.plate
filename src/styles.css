@@ -333,3 +333,4 @@ html:not(.js-tear) .sheets{display:grid;gap:12px}
 .tear-band .cta-card .pb-big{color:var(--blue)}
 .tear-band .cta-card a:not(.btn){color:var(--blue)}
 .tear-band .tear-done[hidden]{display:none}
+.deal-hand{margin:0 0 .5em;color:var(--blue-d)}
